@@ -14,15 +14,15 @@ module.exports = (sequelizeInst) => {
         },
         userId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         tableName: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         recordId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         timestamp: {
             type: DataTypes.DATE,

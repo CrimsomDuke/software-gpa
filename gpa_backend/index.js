@@ -8,6 +8,7 @@ const port = 3000;
 const db = require("./models/")
 const cors = require('cors')
 
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended : false }))
 
 app.use(fileUpload({

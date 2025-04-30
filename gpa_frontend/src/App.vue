@@ -3,10 +3,6 @@
 </script>
 
 <template>
-  <header>
-    <h1>Madre mia del amor hermoso</h1>
-  </header>
-
   <main>
     <router-view />
   </main>
