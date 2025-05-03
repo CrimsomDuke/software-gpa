@@ -10,4 +10,5 @@ module.exports = (app) => {
     //con parametros
     app.get('/users/:id', controller.getUserById);
     app.put('/users/change_rol/:id', controller.changeUserRole);
+    app.put('/users/update/:id', controller.updateUser);
 }

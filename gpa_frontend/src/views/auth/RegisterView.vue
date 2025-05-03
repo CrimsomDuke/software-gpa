@@ -5,43 +5,49 @@ import global_vars from '@/config/global_vars';
 
 const router = useRouter();
 const form = ref({
-  username : '',
-  password : '',
-  email : '',
-  role : 'auxiliar' //default role
+  username: '',
+  fullname: '',
+  password: '',
+  email: '',
+  role: 'auxiliar' //default role
 })
 
 const errorMessage = ref('');
 
 const handleRegister = async () => {
-  try{
+  try {
     const response = await fetch(`${global_vars.api_url}/users/register`, {
       method: 'POST',
-      headers : {
-        'Content-Type' : 'application/json'
+      headers: {
+        'Content-Type': 'application/json'
       },
-      body : JSON.stringify(form.value)
+      body: JSON.stringify(form.value)
     })
 
     const data = await response.json();
 
-    if(response.ok){
+    if (response.ok) {
       sessionStorage.setItem('user_id', data.id);
       router.push("/");
-    }else{
+    } else {
       errorMessage.value = data.message || 'Error de autenticación. Por favor, verifica tus credenciales.';
     }
 
-  }catch(error){
+  } catch (error) {
     console.error('Error during login:', error);
   }
 }
 </script>
 
 <template>
+  <div class="container d-flex align-items-center justify-content-center vh-100">
     <div class="login card">
       <h2>Registro</h2>
       <form class="form" @submit.prevent="handleRegister">
+        <div class="form-group">
+          <label class="control-label">Nombre completo:</label>
+          <input v-model="form.fullname" class="form-control" type="text" required />
+        </div>
         <div class="form-group">
           <label class="control-label">Usuario:</label>
           <input v-model="form.username" class="form-control" type="text" required />
@@ -69,7 +75,8 @@ const handleRegister = async () => {
       </form>
       <p>Ya tienes una cuenta? <router-link to="/login">Inicia sesión</router-link></p>
     </div>
-  </template>
+  </div>
+</template>
 <style scoped>
 .login {
   max-width: 400px;

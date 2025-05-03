@@ -13,6 +13,10 @@ module.exports = (sequelizeInst) =>{
             allowNull: false,
             unique: true,
         },
+        fullname : {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         email : {
             type: DataTypes.STRING,
             allowNull: false,
@@ -21,6 +25,10 @@ module.exports = (sequelizeInst) =>{
         password : {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        is_active : {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
         },
         role : {
             type: DataTypes.ENUM('admin', 'contador', 'auxiliar'),
