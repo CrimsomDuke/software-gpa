@@ -1,17 +1,32 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+// Views
 import Home from '../views/HomeView.vue';
+import DashboardView from "../views/DashboardView.vue";
+import EmployeesView from "../views/EmployeesView.vue";
+import DepartmentsView from "../views/DepartmentsView.vue";
+import PositionsView from "../views/PositionsView.vue";
+import ReportsView from "../views/ReportsView.vue";
 import About from '../views/AboutView.vue';
+
+// Auth
 import LoginView from "../views/auth/LoginView.vue";
 import RegisterView from "../views/auth/RegisterView.vue";
+
+// Seguridad
 import ListaUsuariosView from '../views/seguridad/ListaUsuariosView.vue';
 import Guards from "./guards";
 
 const routes = [
     //require login
     { path: '/', name: 'Home', component : Home, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/about', name: 'About', component : About, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/seguridad/usuarios', name: 'Usuarios', component : ListaUsuariosView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/about', name: 'About', component: About, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/seguridad/usuarios', name: 'Usuarios', component: ListaUsuariosView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/dashboard', name: 'Dashboard', component: DashboardView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/employees', name: 'Employees', component: EmployeesView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/departments', name: 'Departments', component: DepartmentsView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/positions', name: 'Positions', component: PositionsView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/reports', name: 'Reports', component: ReportsView, beforeEnter: Guards.IsAuthenticatedGuard },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },
