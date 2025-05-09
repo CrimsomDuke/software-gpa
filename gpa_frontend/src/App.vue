@@ -1,16 +1,12 @@
 <script setup>
-import NavBar from './views/components/Navbar.vue'
-import FooterView from './views/components/FooterView.vue'
 </script>
 
 <template>
   <div class="app-wrapper">
-    <NavBar />
     <div class="content-wrapper">
-      <main class="main-content">
+      <main class="">
         <router-view />
       </main>
-      <FooterView />
     </div>
   </div>
 </template>

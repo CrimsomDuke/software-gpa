@@ -1,7 +1,6 @@
 
 const global_vars = require('../config/global');
 const db = require('../models/');
-const user = require('../models/user');
 const AuditLogService = require('../services/audit_log.service');
 const sha1 = require('sha1');
 

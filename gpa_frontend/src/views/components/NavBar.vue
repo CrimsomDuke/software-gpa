@@ -3,6 +3,7 @@
     <h1 class="logo">Sao Digital</h1>
     <ul>
       <li><router-link to="/">Home</router-link></li>
+      <li><router-link to="/seguridad/usuarios">Seguridad</router-link></li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
       <li><router-link to="/employees">Employees</router-link></li>
       <li><router-link to="/departments">Departments</router-link></li>
@@ -15,14 +16,10 @@
 
 <style scoped>
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 220px;
   height: 100vh;
   background: linear-gradient(180deg, #0f1355, #000000);
   padding-top: 30px;
-  z-index: 100;
 }
 
 
