@@ -49,12 +49,6 @@ exports.getAllCuentas = async (req, res) => {
       const nivel = await db.NivelCuenta.findByPk(nivel_cuenta_id);
       if (!nivel) return res.status(400).json({ message: 'Nivel de cuenta inválido' });
   
-      if (codigo.length !== nivel.longitud_maxima) {
-        return res.status(400).json({
-          message: `La longitud del código debe ser exactamente de ${nivel.longitud_maxima} caracteres para este nivel`
-        });
-      }
-  
       if (cuenta_padre_id) {
         const padre = await db.Cuenta.findByPk(cuenta_padre_id);
         if (!padre) return res.status(400).json({ message: 'Cuenta padre no encontrada' });

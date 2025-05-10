@@ -75,7 +75,7 @@ exports.createTransaccion = async (req, res) => {
         
 
         // Audit log
-        await auditLogService.log('CREATE', ueser_id, 'Transacciones', nuevaTransaccion.id);
+        await auditLogService.createAuditLog('CREATE', usuario_id, 'Transacciones', nuevaTransaccion.id);
 
         return res.status(201).json({
             success: true,
@@ -95,6 +95,8 @@ exports.createTransaccion = async (req, res) => {
     }
 
 }
+
+
 
 const validateTransaccionFields = (req) => {
     const { descripcion, fecha, tipo_transaccion, periodo_fiscal_id, usuario_id } = req.body;
