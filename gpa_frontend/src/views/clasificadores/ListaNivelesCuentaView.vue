@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import global_vars from '@/config/global_vars';
 import NavBar from '../components/NavBar.vue';
+import router from '@/router';
 
 const nivelesCuenta = ref([]);
 const errorMessage = ref('');
@@ -42,9 +43,10 @@ onMounted(fetchNivelesCuenta);
         <div class="container p-3 m-3">
             <div>
                 <h2>Lista de Niveles de Cuenta</h2>
-                <div class="card">
-                    <h3 v-if="errorMessage">{{ errorMessage }}</h3>
-                    <a >Crear Nivel de Cuenta</a>
+                <div class="container">
+                    <div class="container p-3">
+                        <router-link to="/clasificadores/niveles_cuenta/create" class="btn btn-primary">Crear Nivel Cuenta</router-link>
+                    </div>
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -54,6 +56,7 @@ onMounted(fetchNivelesCuenta);
                             </tr>
                         </thead>
                         <tbody>
+                            <h3 v-if="errorMessage">{{ errorMessage }}</h3>
                             <tr v-for="nivel in niveles" :key="nivel.id" >
                                 <td>{{ nivel.nombre }}</td>
                                 <td>{{ nivel.profundidad }}</td>

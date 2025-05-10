@@ -19,6 +19,7 @@ import Guards from "./guards";
 
 //clasificadores
 import ListaNivelesCuentaView from '../views/clasificadores/ListaNivelesCuentaView.vue';
+import NivelCuentaForm from '../views/clasificadores/NivelCuentaForm.vue';
 
 const routes = [
     //require login
@@ -33,6 +34,7 @@ const routes = [
     { path: '/reports', name: 'Reports', component: ReportsView, beforeEnter: Guards.IsAuthenticatedGuard },
 
     { path: '/clasificadores/niveles_cuenta', name: 'Niveles de Cuenta', component: ListaNivelesCuentaView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/niveles_cuenta/form', name: 'Nivel de Cuenta', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },
