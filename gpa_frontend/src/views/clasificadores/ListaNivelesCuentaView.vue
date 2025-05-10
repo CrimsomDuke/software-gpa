@@ -45,7 +45,7 @@ onMounted(fetchNivelesCuenta);
                 <h2>Lista de Niveles de Cuenta</h2>
                 <div class="container">
                     <div class="container p-3">
-                        <router-link to="/clasificadores/niveles_cuenta/create" class="btn btn-primary">Crear Nivel Cuenta</router-link>
+                        <router-link to="/clasificadores/niveles_cuenta/form" class="btn btn-primary">Crear Nivel Cuenta</router-link>
                     </div>
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
@@ -57,7 +57,7 @@ onMounted(fetchNivelesCuenta);
                         </thead>
                         <tbody>
                             <h3 v-if="errorMessage">{{ errorMessage }}</h3>
-                            <tr v-for="nivel in niveles" :key="nivel.id" >
+                            <tr v-for="nivel in nivelesCuenta" :key="nivel.id" >
                                 <td>{{ nivel.nombre }}</td>
                                 <td>{{ nivel.profundidad }}</td>
                                 <td>{{ nivel.longitud_maxima }}</td>
