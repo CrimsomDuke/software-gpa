@@ -17,16 +17,22 @@ import RegisterView from "../views/auth/RegisterView.vue";
 import ListaUsuariosView from '../views/seguridad/ListaUsuariosView.vue';
 import Guards from "./guards";
 
+//clasificadores
+import ListaNivelesCuentaView from '../views/clasificadores/ListaNivelesCuentaView.vue';
+
 const routes = [
     //require login
     { path: '/', name: 'Home', component : Home, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/about', name: 'About', component: About, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/seguridad/usuarios', name: 'Usuarios', component: ListaUsuariosView, beforeEnter: Guards.IsAuthenticatedGuard },
+
     { path: '/dashboard', name: 'Dashboard', component: DashboardView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/employees', name: 'Employees', component: EmployeesView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/departments', name: 'Departments', component: DepartmentsView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/positions', name: 'Positions', component: PositionsView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/reports', name: 'Reports', component: ReportsView, beforeEnter: Guards.IsAuthenticatedGuard },
+
+    { path: '/clasificadores/niveles_cuenta', name: 'Niveles de Cuenta', component: ListaNivelesCuentaView, beforeEnter: Guards.IsAuthenticatedGuard },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },
