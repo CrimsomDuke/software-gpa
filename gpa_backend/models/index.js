@@ -14,6 +14,7 @@ const ObjetoGasto = require('./objeto_gasto')(sequelizeInst);
 const Presupuesto = require('./presupuesto')(sequelizeInst);
 const EjecucionPresupuesto = require('./ejecucion_presupuesto')(sequelizeInst);
 const Reporte = require('./reporte')(sequelizeInst);
+const Parametro = require('./parametro')(sequelizeInst, Sequelize.DataTypes);
 
 /**
  * user y audit_log estan relacionados pero no cuentan con FKs para evitar problemas de integridad referencial
@@ -154,6 +155,7 @@ module.exports = {
     DetalleTransaccion,
     CentroCosto,
     ObjetoGasto,
+    Parametro,
     Presupuesto,
     EjecucionPresupuesto,
     Reporte,

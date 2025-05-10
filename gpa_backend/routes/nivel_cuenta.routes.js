@@ -5,6 +5,7 @@ module.exports = (app) => {
     app.get('/nivel_cuenta', controller.getAllNivelesCuentas);
     app.post('/nivel_cuenta/create', controller.createNivelCuenta);
 
+    app.get('/nivel_cuenta/:id', controller.getNivelCuentaById)
     app.put('/nivel_cuenta/update/:id', controller.updateNivelCuenta);
     app.delete('/nivel_cuenta/delete/:id', controller.deleteNivelCuenta);
 }

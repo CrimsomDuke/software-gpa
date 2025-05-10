@@ -14,6 +14,16 @@ exports.getAllNivelesCuentas = async (req, res) => {
     return res.status(200).json(nivelesCuenta);
 }
 
+exports.getNivelCuentaById = async (req, res) => {
+    const id = req.params.id;
+    const nivelCuenta = await db.NivelCuenta.findByPk(id);
+    if(!nivelCuenta){
+        return res.status(404).json({ message : 'No se encontró un nivel de cuenta' })
+    }
+
+    return res.status(200).json(nivelCuenta);
+}
+ 
 exports.createNivelCuenta = async (req, res) => {
     let errors = validdateNivelCuentaFields(req);
     if (errors){
