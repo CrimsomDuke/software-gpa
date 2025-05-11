@@ -4,6 +4,33 @@ const auditLogService = require('../services/audit_log.service');
 const global_vars = require('../config/global');
 
 
+exports.getAllTransacciones = async (req, res) => {
+    try {
+        const transacciones = await db.Transaccion.findAll();
+        return res.status(200).json(transacciones);
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        return res.status(500).json({ message: 'Error obteniendo transacciones' });
+    }
+}
+
+exports.getTransaccionById = async (req, res) => {
+    const { id } = req.params
+    const transaccion = await db.Transaccion.findByPk(id, {
+        include : [
+            { model: db.DetalleTransaccion, as: 'detalles' },
+            { model: db.PeriodoFiscal, as: 'periodo_fiscal' },
+            { model: db.User, as: 'usuario' }
+        ]
+    })
+
+    if(!transaccion){
+        return res.status(404).json({ message: 'No se encontró la transacción' });
+    }
+
+    return res.status(200).json(transaccion);
+}
+
 exports.createTransaccion = async (req, res) => {
     try {
         // Validate campos transaccion
@@ -33,8 +60,7 @@ exports.createTransaccion = async (req, res) => {
         }, { totalDebito: 0, totalCredito: 0 });
 
         if (totalDebito !== totalCredito) {
-            return res.status(400).json({ 
-                success: false,
+            return res.status(400).json({
                 message: 'La suma de los débitos y créditos no es igual',
                 details: {
                     totalDebito,
@@ -72,8 +98,6 @@ exports.createTransaccion = async (req, res) => {
             )
         );
 
-        
-
         // Audit log
         await auditLogService.createAuditLog('CREATE', usuario_id, 'Transacciones', nuevaTransaccion.id);
 
@@ -95,7 +119,101 @@ exports.createTransaccion = async (req, res) => {
     }
 
 }
+//LA MODIFICACIÓN DE LOS DETALLES DE TRANSACCION SE HACE EN EL CONTROLADOR DE DETALLE TRANSACCION
+exports.updateTransaccion = async (req, res) => {
+    const { id } = req.params;
+    const { descripcion, fecha, tipo_transaccion, periodo_fiscal_id, usuario_id } = req.body;
+    try{
+        const transaccion = await db.Transaccion.findByPk(id);
+        if (!transaccion) {
+            return res.status(404).json({ message: 'No se encontró la transacción' });
+        }
 
+        //check campos enviados
+        if (descripcion) transaccion.descripcion = descripcion;
+        if (fecha) transaccion.fecha = fecha;
+        if (tipo_transaccion) transaccion.tipo_transaccion = tipo_transaccion;
+        if (periodo_fiscal_id) transaccion.periodo_fiscal_id = periodo_fiscal_id;
+        if (usuario_id) transaccion.usuario_id = usuario_id;
+
+        transaccion.save();
+        await auditLogService.createAuditLog('UPDATE', usuario_id, 'Transacciones', transaccion.id);
+
+        return res.status(200).json(transaccion);
+
+    }catch(error){
+        console.error('Error updating transaction:', error);
+        return res.status(500).json({
+            message : 'Error al actualizar la transacción: ' + error.message,
+            error : error
+        });
+    }
+}
+
+exports.deleteTransaccion = async (req, res) => {
+    const { id } = req.params;
+    const { usuario_id } = req.body;
+    try {
+        const transaccion = await db.Transaccion.findByPk(id);
+        if (!transaccion) {
+            return res.status(404).json({ message: 'No se encontró la transacción' });
+        }
+
+        // Eliminar detalles de transacción
+        await db.DetalleTransaccion.destroy({
+            where: {
+                transaccion_id: id
+            }
+        });
+
+        await transaccion.destroy();
+        await auditLogService.createAuditLog('DELETE', usuario_id, 'Transacciones', transaccion.id);
+
+        return res.status(200).json({
+            message: 'Transacción eliminada exitosamente',
+            data: transaccion
+        });
+    }catch (error) {
+        console.error('Error deleting transaction:', error);
+        return res.status(500).json({
+            message : 'Error al eliminar la transacción: ' + error.message,
+            error : error
+        });
+    }
+}
+
+exports.deleteTransaccionDetalles = async (req, res) => {
+    const { id } = req.params;
+    const { usuario_id } = req.body;
+
+    try{
+        const transaccion = await db.Transaccion.findByPk(id);
+        if (!transaccion) {
+            return res.status(404).json({ message: 'No se encontró la transacción' });
+        }
+
+        const detalles = await db.DetalleTransaccion.findAll({
+            where: {
+                transaccion_id: id
+            }
+        });
+
+        if(!detalles || detalles.length === 0){
+            return res.status(404).json({ message: 'No se encontraron detalles de transacción para eliminar' });
+        }
+
+        detalles.forEach(async (detalle) => {
+            await detalle.destroy();
+        });
+
+    }catch(error){
+        console.error('Error deleting transaction details:', error);
+        return res.status(500).json({
+            message : 'Error al eliminar los detalles de la transacción: ' + error.message,
+            error : error
+        });
+    }
+}
 
 
 const validateTransaccionFields = (req) => {
@@ -138,7 +256,7 @@ const validateTransaccionDetalles = (detalles) => {
     return null;
 };
 
-
+//CODIGO REFERENCIA
 const generarReferenciaTransaccion = () => {
     const prefix = 'SAO-TXN';
     const timestamp = Date.now().toString().slice(-6);

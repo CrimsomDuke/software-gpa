@@ -5,6 +5,7 @@ module.exports = (app) => {
     require('./tipo_cuenta.route')(app);
     require('./presupuesto.route')(app);
     require('./transaccion.routes')(app);
+    require('./detalle_transaccion.routes')(app);
     require('./periodo_fiscal.routes')(app);
     require('./nivel_cuenta.routes')(app);
     require('./cuenta.routes')(app);
