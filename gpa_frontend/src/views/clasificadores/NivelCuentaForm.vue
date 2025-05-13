@@ -4,6 +4,7 @@ import NavBar from '../components/NavBar.vue';
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import global_vars from '@/config/global_vars';
+import CustomComboBox from '../components/ComboBox.vue';
 
 const router = useRouter()
 const route = useRoute()
@@ -24,10 +25,20 @@ const form = ref({
 const errorMessage = ref('');
 
 const handleSubmit = async () => {
-    if(route.params.id){
 
+    if(!validateForm()){
+        return;
+    }
+
+    if(route.params.id){
+        await handleUpdate();
     }else{
         await handleCreate();
+    }
+
+    if(!errorMessage.value){
+        console.log('Nivel de cuenta creado');
+        router.push('/clasificadores/niveles_cuenta');
     }
 }
 
@@ -46,10 +57,68 @@ const handleCreate = async () => {
             errorMessage.value = data.message;
             return;
         }
-        router.push('/clasificadores/niveles_cuenta')
     }catch(error){
         console.log(error);
     }
+}
+
+const handleUpdate = async () => {
+    try{
+        const response = await fetch(`${global_vars.api_url}/nivel_cuenta/update/${nivel_cuenta_id}`, {
+            method: 'PUT',
+            headers : {
+                "Content-Type" : 'application/json'
+            },
+            body : JSON.stringify(form.value)
+        });
+
+        const data = await response.json()
+        if(!response.status.ok){
+            errorMessage.value = data.message;
+            return;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const handleDelete = async () => {
+    if(!confirm('¿Está seguro de que desea eliminar este nivel de cuenta?')){
+        return;
+    }
+    try{
+        const response = await fetch(`${global_vars.api_url}/nivel_cuenta/delete/${nivel_cuenta_id}`, {
+            method: 'DELETE',
+            headers : {
+                "Content-Type" : 'application/json'
+            },
+            body : JSON.stringify(form.value) //user id en el form
+        });
+
+        const data = await response.json()
+        if(!response.status.ok){
+            errorMessage.value = data.message;
+            return;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const validateForm = () => {
+    if(!form.value.nombre){
+        errorMessage.value = 'El nombre de nivel de cuenta es requerido';
+        return false;
+    }
+    if(!form.value.profundidad){
+        errorMessage.value = 'La profundidad es requerida';
+        return false;
+    }
+    if(!form.value.longitud_maxima){
+        errorMessage.value = 'La longitud máxima es requerida';
+        return false;
+    }
+    return true;
 }
 
 const fetchNivelCuentaData = async () => {
@@ -82,11 +151,12 @@ if(route.params.id){
                     <div>
                         <router-link to="/clasificadores/niveles_cuenta" class="btn btn-secondary">Volver atrás</router-link>
                     </div>
-                    <h2>Crear nivel de Cuenta</h2>
+                    <h2>Establecer nivel de Cuenta</h2>
                     <form class="form" @submit.prevent="handleSubmit">
                         <div class="form-group">
                             <label class="control-label">Nombre de nivel de cuenta:</label>
-                            <input v-model="form.nombre" type="text" placeholder="nombre" class="form-control"/>
+                            <CustomComboBox v-model="form.nombre" :dataSource=global_vars.NIVELES_CUENTAS :default-value=form.nombre
+                                :isPrimitiveArray="true"/>
                         </div>
                         <div class="form-group">
                             <label class="control-label">Profundidad (Número entero):</label>
@@ -97,10 +167,15 @@ if(route.params.id){
                             <input v-model="form.longitud_maxima" type="number" value="1" min="1" max="4" class="form-control"/>
                         </div>
                         <input v-model="form.user_id" type="hidden" />
-                        <div class="container p-3">
+                        <div class="container p-3 w-100 d-flex justify-content-between">
                             <button class="btn btn-success" type="submit">Guardar</button>
+                            <button class="btn btn-danger" type="button" @click="async () => { 
+                                await handleDelete(); router.push('/clasificadores/niveles_cuenta')}">
+                                Eliminar
+                            </button>
                         </div>
                     </form>
+                    <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
                 </div>
             </div>
         </div>

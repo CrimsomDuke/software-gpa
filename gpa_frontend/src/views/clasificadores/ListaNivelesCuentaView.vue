@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import global_vars from '@/config/global_vars';
 import NavBar from '../components/NavBar.vue';
-import router from '@/router';
+import { RouterLink } from 'vue-router';
 
 const nivelesCuenta = ref([]);
 const errorMessage = ref('');
@@ -53,15 +53,20 @@ onMounted(fetchNivelesCuenta);
                                 <th class="gradient-blue text-white">Nombre</th>
                                 <th class="gradient-blue text-white">Profundidad</th>
                                 <th class="gradient-blue text-white">Longitud Máxima</th>
+                                <th class="gradient-blue text-white">Editar</th>
                             </tr>
                         </thead>
                         <tbody>
                             <h3 v-if="errorMessage">{{ errorMessage }}</h3>
-                            <tr v-for="nivel in nivelesCuenta" :key="nivel.id" >
-                                <td>{{ nivel.nombre }}</td>
-                                <td>{{ nivel.profundidad }}</td>
-                                <td>{{ nivel.longitud_maxima }}</td>
-                                <td><button class="btn btn-primary" @click="editNivel(nivel.id)">Editar</button></td>
+                            <tr v-for="nivel in nivelesCuenta" :key="nivel.id">
+                                <td class="text-center">{{ nivel.nombre }}</td>
+                                <td class="text-center">{{ nivel.profundidad }}</td>
+                                <td class="text-center">{{ nivel.longitud_maxima }}</td>
+                                <td class="text-center">
+                                    <router-link :to="{ name: 'NivelCuentasFormEdit', params: { id: nivel.id } }" class="btn btn-primary">
+                                        Editar
+                                    </router-link>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

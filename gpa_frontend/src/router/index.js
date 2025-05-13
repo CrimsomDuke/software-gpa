@@ -34,7 +34,8 @@ const routes = [
     { path: '/reports', name: 'Reports', component: ReportsView, beforeEnter: Guards.IsAuthenticatedGuard },
 
     { path: '/clasificadores/niveles_cuenta', name: 'Niveles de Cuenta', component: ListaNivelesCuentaView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/niveles_cuenta/form', name: 'Nivel de Cuenta', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/niveles_cuenta/form', name: 'NivelCuentasFormCreate', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/niveles_cuenta/form/:id', name: 'NivelCuentasFormEdit', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },

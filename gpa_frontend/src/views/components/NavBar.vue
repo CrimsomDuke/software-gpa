@@ -3,16 +3,33 @@
     <h1 class="logo">Sao Digital</h1>
     <ul>
       <li><router-link to="/">Home</router-link></li>
+      <li class="has-submenu" @click="toggleSubmenu('clasificadores')">
+        <div class="menu-item">
+          <span>Clasificadores</span>
+          <span class="arrow" :class="{ rotated: openSubmenus.clasificadores }">›</span>
+        </div>
+        <ul class="submenu" v-show="openSubmenus.clasificadores">
+          <li><router-link to="/clasificadores/niveles_cuenta">Niveles de Cuenta</router-link></li>
+        </ul>
+      </li>
       <li><router-link to="/seguridad/usuarios">Seguridad</router-link></li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
-      <li><router-link to="/employees">Employees</router-link></li>
-      <li><router-link to="/departments">Departments</router-link></li>
-      <li><router-link to="/positions">Positions</router-link></li>
-      <li><router-link to="/reports">Reports</router-link></li>
-      <li><router-link to="/about">About</router-link></li>
     </ul>
   </nav>
 </template>
+
+<script setup>
+
+import { ref } from 'vue';
+
+const openSubmenus = ref({
+  clasificadores: false
+});
+
+const toggleSubmenu = (menu) => {
+  openSubmenus.value[menu] = !openSubmenus.value[menu];
+};
+</script>
 
 <style scoped>
 .sidebar {
@@ -51,5 +68,51 @@
 .sidebar a.router-link-exact-active {
   background: linear-gradient(to right, #386dff, #000000);
   color: white;
+}
+
+.has-submenu {
+  cursor: pointer;
+  position: relative;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  color: white;
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+  font-size: 18px;
+}
+
+.arrow.rotated {
+  transform: rotate(90deg);
+}
+
+.submenu {
+  background: rgba(0, 0, 0, 0.2);
+  padding-left: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.submenu a {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.submenu a.router-link-exact-active {
+  background: rgba(56, 109, 255, 0.3);
+}
+
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.has-submenu:hover .menu-item {
+  background: rgba(255, 255, 255, 0.1);
 }
 </style>
