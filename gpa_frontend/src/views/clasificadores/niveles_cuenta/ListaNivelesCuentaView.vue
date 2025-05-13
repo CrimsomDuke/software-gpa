@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import global_vars from '@/config/global_vars';
-import NavBar from '../components/NavBar.vue';
+import NavBar from '../../components/NavBar.vue';
 import { RouterLink } from 'vue-router';
 
 const nivelesCuenta = ref([]);

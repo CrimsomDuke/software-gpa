@@ -58,6 +58,7 @@ exports.createNivelCuenta = async (req, res) => {
 
 exports.deleteNivelCuenta = async (req, res) => {
     const { id } = req.params;
+    const { user_id } = req.body;
     try {
         const nivelCuenta = await db.NivelCuenta.findByPk(id);
         if (!nivelCuenta) {
@@ -65,6 +66,9 @@ exports.deleteNivelCuenta = async (req, res) => {
         }
 
         await db.NivelCuenta.destroy({ where: { id } });
+
+        await AuditLogService.createAuditLog('delete', user_id, 'NivelCuenta', id);
+
         return res.status(200).json({ message: 'Nivel de cuenta eliminado' });
     } catch (error) {
         console.error('Error deleting Nivel Cuenta:', error);

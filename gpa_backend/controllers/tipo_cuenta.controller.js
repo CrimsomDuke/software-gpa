@@ -17,7 +17,7 @@ exports.getTipoCuentaById = async (req, res) => {
 
 exports.getAllTipoCuentas = async (req, res) => {
     try{
-        const tipoCuentas = await db.TipoCudenta.findAll();
+        const tipoCuentas = await db.TipoCuenta.findAll();
 
         if (tipoCuentas === null || tipoCuentas.length === 0) {
             return res.status(404).json({ message: 'No se encontraron tipos de cuenta' });

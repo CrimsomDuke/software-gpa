@@ -53,6 +53,7 @@ const onValueSelected = (e) => {
             </option>
         </select>
         <select @change="onValueSelected" v-else class="form-control form-select">
+            <option v-show="defaultValue" value="" disabled selected>--Seleccione una opción--</option>
             <option v-for="item in dataSource" :key="item" :value="item"
                 :selected="item === defaultValue">
                 {{ item }}

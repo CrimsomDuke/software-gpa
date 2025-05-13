@@ -18,8 +18,10 @@ import ListaUsuariosView from '../views/seguridad/ListaUsuariosView.vue';
 import Guards from "./guards";
 
 //clasificadores
-import ListaNivelesCuentaView from '../views/clasificadores/ListaNivelesCuentaView.vue';
-import NivelCuentaForm from '../views/clasificadores/NivelCuentaForm.vue';
+import ListaNivelesCuentaView from '../views/clasificadores/niveles_cuenta/ListaNivelesCuentaView.vue';
+import NivelCuentaForm from '../views/clasificadores/niveles_cuenta/NivelCuentaForm.vue';
+import ListaTiposCuenaView from "@/views/clasificadores/tipos_cuenta/ListaTiposCuenaView.vue";
+import TipoCuentaForm from "@/views/clasificadores/tipos_cuenta/TipoCuentaForm.vue";
 
 const routes = [
     //require login
@@ -33,9 +35,13 @@ const routes = [
     { path: '/positions', name: 'Positions', component: PositionsView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/reports', name: 'Reports', component: ReportsView, beforeEnter: Guards.IsAuthenticatedGuard },
 
+    //CLASIFICADORES
     { path: '/clasificadores/niveles_cuenta', name: 'Niveles de Cuenta', component: ListaNivelesCuentaView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/niveles_cuenta/form', name: 'NivelCuentasFormCreate', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/niveles_cuenta/form/:id', name: 'NivelCuentasFormEdit', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/tipos_cuenta', name: 'TiposCuenta', component: ListaTiposCuenaView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/tipos_cuenta/form', name: 'TipoCuentasFormCreate', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/tipos_cuenta/form/:id', name: 'TipoCuentasFormEdit', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },

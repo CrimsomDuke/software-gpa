@@ -10,9 +10,19 @@
         </div>
         <ul class="submenu" v-show="openSubmenus.clasificadores">
           <li><router-link to="/clasificadores/niveles_cuenta">Niveles de Cuenta</router-link></li>
+          <li><router-link to="/clasificadores/tipos_cuenta">Tipos de cuenta</router-link></li>
         </ul>
       </li>
-      <li><router-link to="/seguridad/usuarios">Seguridad</router-link></li>
+      <li>
+        <div class="menu-item" @click="toggleSubmenu('seguridad')">
+          <span>Seguridad</span>
+          <span class="arrow" :class="{ rotated: openSubmenus.seguridad }">›</span>
+        </div>
+        <ul class="submenu" v-show="openSubmenus.seguridad">
+          <li><router-link to="/seguridad/usuarios">Usuarios</router-link></li>
+          <li><router-link to="/seguridad/roles">Roles</router-link></li>
+        </ul>
+      </li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
     </ul>
   </nav>
@@ -23,7 +33,8 @@
 import { ref } from 'vue';
 
 const openSubmenus = ref({
-  clasificadores: false
+  clasificadores: false,
+  seguridad: false,
 });
 
 const toggleSubmenu = (menu) => {
@@ -105,7 +116,7 @@ const toggleSubmenu = (menu) => {
 }
 
 .submenu a.router-link-exact-active {
-  background: rgba(56, 109, 255, 0.3);
+  background: rgba(27, 66, 172, 0.3);
 }
 
 .sidebar a:hover {
