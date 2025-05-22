@@ -24,6 +24,16 @@
         </ul>
       </li>
       <li><router-link to="/plan_cuentas/cuentas">Plan de cuentas</router-link></li>
+      <li class="has-submenu" @click="toggleSubmenu('contable')">
+        <div class="menu-item">
+          <span>Contable</span>
+          <span class="arrow" :class="{ rotated: openSubmenus.contable }">›</span>
+        </div>
+        <ul class="submenu" v-show="openSubmenus.contable">
+          <li><router-link to="/contable/transacciones">Transacciones</router-link></li>
+          <li><router-link to="/contable/periodos_fiscales">Periodos Fiscales</router-link></li>
+        </ul>
+      </li>
       <li>
         <div class="menu-item" @click="toggleSubmenu('informes')">
           <span>Informes</span>
@@ -47,7 +57,8 @@ import { ref } from 'vue';
 const openSubmenus = ref({
   clasificadores: false,
   seguridad: false,
-  informes: false
+  informes: false,
+  contable: false,
 });
 
 const toggleSubmenu = (menu) => {
