@@ -29,10 +29,6 @@ module.exports = (sequelizeInstance) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        fecha_nacimiento : {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
         user_id : {
             type: DataTypes.INTEGER,
             allowNull: true
