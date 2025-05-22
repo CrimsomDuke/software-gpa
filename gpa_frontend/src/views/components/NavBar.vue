@@ -23,6 +23,18 @@
           <li><router-link to="/seguridad/roles">Roles</router-link></li>
         </ul>
       </li>
+      <li><router-link to="/plan_cuentas/cuentas">Plan de cuentas</router-link></li>
+      <li>
+        <div class="menu-item" @click="toggleSubmenu('informes')">
+          <span>Informes</span>
+          <span class="arrow" :class="{ rotated: openSubmenus.informes }">›</span>
+        </div>
+        <ul class="submenu" v-show="openSubmenus.informes">
+          <li><router-link to="/informes/libro_mayor">Libro Mayor</router-link></li>
+          <li><router-link to="/informes/libro_diario">Libro Diario</router-link></li>
+          <li><router-link to="/informes/balance_general">Balance General</router-link></li>
+        </ul>
+      </li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
     </ul>
   </nav>
@@ -35,6 +47,7 @@ import { ref } from 'vue';
 const openSubmenus = ref({
   clasificadores: false,
   seguridad: false,
+  informes: false
 });
 
 const toggleSubmenu = (menu) => {

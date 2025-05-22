@@ -24,6 +24,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    disabled : {
+        type: Boolean,
+        default: false,
+    }
 })
 //Con emit se emiten eventos al padre
 const emit = defineEmits(['update:modelValue']);
@@ -46,13 +50,15 @@ const onValueSelected = (e) => {
 
 <template>
     <div>
-        <select @change="onValueSelected" v-if="isPrimitiveArray === false" class="form-control form-select">
+        <select @change="onValueSelected" v-if="isPrimitiveArray === false" class="form-control form-select"
+            :disabled="disabled">
             <option v-for="item in dataSource" :key="item[valueField]" :value="item[valueField]"
                 :selected="item[valueField] === defaultValue">
                 {{ item[textField] }}
             </option>
         </select>
-        <select @change="onValueSelected" v-else class="form-control form-select">
+        <select @change="onValueSelected" v-else class="form-control form-select"
+            :disabled="disabled">
             <option v-show="defaultValue" value="" disabled selected>--Seleccione una opción--</option>
             <option v-for="item in dataSource" :key="item" :value="item"
                 :selected="item === defaultValue">

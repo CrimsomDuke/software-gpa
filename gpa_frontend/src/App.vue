@@ -15,7 +15,7 @@
 
 .app-wrapper {
   display: flex;
-  min-height: 110vh;
+  min-height: 100vh;
   flex-direction: row;
   width: 100vw;
   overflow-x: hidden;
