@@ -1,6 +1,7 @@
 
 const { sequelizeInst, Sequelize } = require('../config/db.config');
 
+const Persona = require('./persona')(sequelizeInst);
 const User = require('./user')(sequelizeInst);
 const AuditLog = require('./audit_log')(sequelizeInst);
 const TipoCuenta = require('./tipo_cuenta')(sequelizeInst);
@@ -20,7 +21,11 @@ const Parametro = require('./parametro')(sequelizeInst, Sequelize.DataTypes);
  * user y audit_log estan relacionados pero no cuentan con FKs para evitar problemas de integridad referencial
  * Al borrar un usuario, evitar que se borren los logs de auditoria
  */
-
+//Persona
+Persona.belongsTo(User, {
+    foreignKey: 'user_id',
+    as: 'user'
+});
 
 //CUENTA
 TipoCuenta.hasMany(Cuenta, {
