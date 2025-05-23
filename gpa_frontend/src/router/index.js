@@ -13,19 +13,26 @@ import About from '../views/AboutView.vue';
 import LoginView from "../views/auth/LoginView.vue";
 import RegisterView from "../views/auth/RegisterView.vue";
 
+
 // Seguridad
 import ListaUsuariosView from '../views/seguridad/ListaUsuariosView.vue';
+
 import Guards from "./guards";
 
-//clasificadores
+// Clasificadores
 import ListaNivelesCuentaView from '../views/clasificadores/niveles_cuenta/ListaNivelesCuentaView.vue';
 import NivelCuentaForm from '../views/clasificadores/niveles_cuenta/NivelCuentaForm.vue';
 import ListaTiposCuenaView from "@/views/clasificadores/tipos_cuenta/ListaTiposCuenaView.vue";
 import TipoCuentaForm from "@/views/clasificadores/tipos_cuenta/TipoCuentaForm.vue";
+import CentroDeCostoView from "@/views/clasificadores/CentroDeCosto/CentroDeCostoView.vue";
+import ObjetoDeGastosView from "@/views/clasificadores/ObjetoDeGastos/ObjetoDeGastosView.vue";
 
+// Presupuesto
+import EjecucionPresupuestoView from "@/views/clasificadores/Presupuesto/EjecucionPresupuestoView.vue";
+import PresupuestoView from "@/views/clasificadores/Presupuesto/PresupuestoView.vue";
 const routes = [
-    //require login
-    { path: '/', name: 'Home', component : Home, beforeEnter: Guards.IsAuthenticatedGuard },
+    // Require login
+    { path: '/', name: 'Home', component: Home, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/about', name: 'About', component: About, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/seguridad/usuarios', name: 'Usuarios', component: ListaUsuariosView, beforeEnter: Guards.IsAuthenticatedGuard },
 
@@ -35,23 +42,26 @@ const routes = [
     { path: '/positions', name: 'Positions', component: PositionsView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/reports', name: 'Reports', component: ReportsView, beforeEnter: Guards.IsAuthenticatedGuard },
 
-    //CLASIFICADORES
+    // Clasificadores
     { path: '/clasificadores/niveles_cuenta', name: 'Niveles de Cuenta', component: ListaNivelesCuentaView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/niveles_cuenta/form', name: 'NivelCuentasFormCreate', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/niveles_cuenta/form/:id', name: 'NivelCuentasFormEdit', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/tipos_cuenta', name: 'TiposCuenta', component: ListaTiposCuenaView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/tipos_cuenta/form', name: 'TipoCuentasFormCreate', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/tipos_cuenta/form/:id', name: 'TipoCuentasFormEdit', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
-
-    //auth routes
-    { path: '/login', name: 'Login', component : LoginView },
-    { path: '/register', name: 'Register', component : RegisterView },
-]
+    { path: '/clasificadores/centros_costo', name: 'CentrosCosto', component: CentroDeCostoView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/objetos_gasto', name: 'ObjetosGasto', component: ObjetoDeGastosView, beforeEnter: Guards.IsAuthenticatedGuard },
+    // Presupuesto
+    { path: '/presupuesto/ejecucion', name: 'EjecucionPresupuesto', component: EjecucionPresupuestoView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/PresupuestoView', name: 'PresupuestoView', component: PresupuestoView, beforeEnter: Guards.IsAuthenticatedGuard },
+    // Auth routes
+    { path: '/login', name: 'Login', component: LoginView },
+    { path: '/register', name: 'Register', component: RegisterView },
+];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
-})
-
+});
 
 export default router;

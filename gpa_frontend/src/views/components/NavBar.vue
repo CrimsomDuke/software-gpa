@@ -11,6 +11,8 @@
         <ul class="submenu" v-show="openSubmenus.clasificadores">
           <li><router-link to="/clasificadores/niveles_cuenta">Niveles de Cuenta</router-link></li>
           <li><router-link to="/clasificadores/tipos_cuenta">Tipos de cuenta</router-link></li>
+          <li><router-link to="/clasificadores/centros_costo">Centros de Costo</router-link></li>
+          <li><router-link to="/clasificadores/objetos_gasto">Objetos de Gasto</router-link></li>
         </ul>
       </li>
       <li>
@@ -21,6 +23,17 @@
         <ul class="submenu" v-show="openSubmenus.seguridad">
           <li><router-link to="/seguridad/usuarios">Usuarios</router-link></li>
           <li><router-link to="/seguridad/roles">Roles</router-link></li>
+        </ul>
+      </li>
+      <li>
+        <div class="menu-item" @click="toggleSubmenu('Presupuesto')">
+          <span>Presupuesto</span>
+          <span class="arrow" :class="{ rotated: openSubmenus.Presupuesto }">›</span>
+        </div>
+        <ul class="submenu" v-show="openSubmenus.Presupuesto">
+          <li><router-link to="/clasificadores/PresupuestoView">presupuesto</router-link></li>
+          <li><router-link to="/presupuesto/ejecucion">Ejecución de Presupuesto</router-link></li>
+          
         </ul>
       </li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
