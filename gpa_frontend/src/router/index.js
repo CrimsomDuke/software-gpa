@@ -31,10 +31,13 @@ import ListaCuentasView from "@/views/plan_cuentas/ListaCuentasView.vue";
 import LibroMayorView from "@/views/informes/LibroMayorView.vue";
 import LibroDiarioView from "@/views/informes/LibroDiarioView.vue";
 import BalanceGeneralView from "@/views/informes/BalanceGeneralView.vue";
+import PeriodosFiscales from "@/views/contable/PeriodosFiscales.vue";
+import TransaccionesContables from "@/views/contable/TransaccionesContables.vue";
 
 // Presupuesto
 import EjecucionPresupuestoView from "@/views/clasificadores/Presupuesto/EjecucionPresupuestoView.vue";
 import PresupuestoView from "@/views/clasificadores/Presupuesto/PresupuestoView.vue";
+import ListaRolesView from "@/views/seguridad/ListaRolesView.vue";
 const routes = [
     // Require login
     { path: '/', name: 'Home', component: Home, beforeEnter: Guards.IsAuthenticatedGuard },
@@ -44,6 +47,7 @@ const routes = [
     { path: '/seguridad/usuarios', name: 'Usuarios', component: ListaUsuariosView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/seguridad/usuarios/form', name: 'UsuariosFormCreate', component: UsuarioForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/seguridad/usuarios/form/:id', name: 'UsuariosFormEdit', component: UsuarioForm, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/seguridad/roles', name: 'Roles', component: ListaRolesView, beforeEnter: Guards.IsAuthenticatedGuard },
 
     { path: '/dashboard', name: 'Dashboard', component: DashboardView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/employees', name: 'Employees', component: EmployeesView, beforeEnter: Guards.IsAuthenticatedGuard },
@@ -63,10 +67,10 @@ const routes = [
     // Presupuesto
     { path: '/presupuesto/ejecucion', name: 'EjecucionPresupuesto', component: EjecucionPresupuestoView, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/PresupuestoView', name: 'PresupuestoView', component: PresupuestoView, beforeEnter: Guards.IsAuthenticatedGuard },
-    // Auth routes
-    { path: '/login', name: 'Login', component: LoginView },
-    { path: '/register', name: 'Register', component: RegisterView },
 
+    //CONTABLE
+    { path: '/contable/periodos_fiscales', name: 'PeriodosFiscales', component: PeriodosFiscales, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/contable/transacciones', name: 'TransaccionesContables', component: TransaccionesContables, beforeEnter: Guards.IsAuthenticatedGuard },
 
     //PLAN DE CUENTAS
     { path: '/plan_cuentas/cuentas', name: 'Cuentas', component: ListaCuentasView, beforeEnter: Guards.IsAuthenticatedGuard },
