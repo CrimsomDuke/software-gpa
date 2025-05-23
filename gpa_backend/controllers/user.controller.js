@@ -7,6 +7,11 @@ const sha1 = require('sha1');
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await db.User.findAll();
+
+        users.forEach(element => {
+            element.password = undefined;
+        });
+
         res.status(200).json(users);
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -21,6 +26,7 @@ exports.getUserById = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+        user.password = undefined;
         res.status(200).json(user);
     } catch (error) {
         console.error('Error fetching user:', error);
@@ -92,10 +98,14 @@ exports.loginUser = async (req, res) => {
 
 exports.changeUserRole = async (req, res) => {
     const { id } = req.params;
-    const { role } = req.body;
+    const { role, user_edit_id } = req.body;
 
     if(global_vars.user_roles.indexOf(role) === -1){
         return res.status(400).json({ message: 'Rol invalido' });
+    }
+
+    if(!user_edit_id){
+            return res.status(400).json({ message: 'ID de usuario que edita es requerido' });
     }
     try {
         const user = await db.User.findByPk(id);
@@ -118,12 +128,16 @@ exports.changeUserRole = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
-    const { username, fullname, email, password, role } = req.body;
+    const { username, fullname, email, password, role, user_edit_id } = req.body;
 
     try {
         const user = await db.User.findByPk(id);
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        if(!user_edit_id){
+            return res.status(400).json({ message: 'ID de usuario que edita es requerido' });
         }
 
         if(username){
@@ -146,7 +160,7 @@ exports.updateUser = async (req, res) => {
         await user.save();
 
         // Create an audit log for user update
-        await AuditLogService.createAuditLog('update', user.id, 'User', user.id);
+        await AuditLogService.createAuditLog('update', user_edit_id, 'User', user.id);
 
         res.status(200).json(user);
     } catch (error) {

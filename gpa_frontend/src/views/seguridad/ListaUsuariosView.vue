@@ -50,11 +50,15 @@ onMounted(fetchUsers);
                         </thead>
                         <tbody>
                             <tr v-for="user in users" :key="user.id" >
-                                <td>{{ user.fullname }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.role }}</td>
-                                <td><button class="btn btn-primary" @click="editUser(user.id)">Editar</button></td>
+                                <td class="text-center">{{ user.fullname }}</td>
+                                <td class="text-center">{{ user.username }}</td>
+                                <td class="text-center">{{ user.email }}</td>
+                                <td class="text-center">{{ user.role }}</td>
+                                <td class="text-center">
+                                    <router-link :to="{ name: 'UsuariosFormEdit', params: { id: user.id } }" class="btn btn-primary">
+                                        Editar
+                                    </router-link>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
