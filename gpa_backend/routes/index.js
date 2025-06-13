@@ -10,4 +10,6 @@ module.exports = (app) => {
     require('./nivel_cuenta.routes')(app);
     require('./cuenta.routes')(app);
     require('./parametro.routes')(app);
+    require('./objeto_gasto.routes')(app);
+    require('./ejecucion_presupuesto.routes')(app);
 }

@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const objeto_gasto = require('./objeto_gasto');
 
 module.exports = (sequelizeInst) => {
     const Cuenta = sequelizeInst.define('Cuenta', {
@@ -35,6 +36,10 @@ module.exports = (sequelizeInst) => {
         cuenta_padre_id: { //(auto-referencia)
             type: DataTypes.INTEGER,
             allowNull: true,
+        },
+        objeto_gasto_id: {
+            type: DataTypes.INTEGER,
+            allowNull: true
         }
     });
 

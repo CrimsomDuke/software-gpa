@@ -140,6 +140,10 @@ EjecucionPresupuesto.belongsTo(DetalleTransaccion, {
     as: 'detalle_transaccion'
 });
 
+ObjetoGasto.hasMany(Cuenta, {
+    foreignKey: 'objeto_gasto_id',
+    as: 'cuentas'
+});
 
 sequelizeInst.sync({
     alter : true

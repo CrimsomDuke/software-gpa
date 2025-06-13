@@ -38,9 +38,9 @@ exports.getAllCuentas = async (req, res) => {
   
   // Crear cuenta
   exports.createCuenta = async (req, res) => {
-    const { codigo, nombre, descripcion, tipo_cuenta_id, nivel_cuenta_id, cuenta_padre_id, user_id } = req.body;
+    const { codigo, nombre, descripcion, tipo_cuenta_id, nivel_cuenta_id, cuenta_padre_id, objeto_gasto_id, user_id } = req.body;
   
-    if (!codigo || !nombre || !tipo_cuenta_id || !nivel_cuenta_id || !user_id) {
+    if (!codigo || !nombre || !tipo_cuenta_id || !nivel_cuenta_id || !objeto_gasto_id || !user_id) {
       return res.status(400).json({ message: 'Faltan campos obligatorios' });
     }
   
@@ -61,6 +61,7 @@ exports.getAllCuentas = async (req, res) => {
         tipo_cuenta_id,
         nivel_cuenta_id,
         cuenta_padre_id,
+        objeto_gasto_id: objeto_gasto_id || null,
         esta_activa: true
       });
   
@@ -76,7 +77,7 @@ exports.getAllCuentas = async (req, res) => {
   // Actualizar cuenta
   exports.updateCuenta = async (req, res) => {
     const { id } = req.params;
-    const { codigo, nombre, descripcion, tipo_cuenta_id, nivel_cuenta_id, cuenta_padre_id, esta_activa, user_id } = req.body;
+    const { codigo, nombre, descripcion, tipo_cuenta_id, nivel_cuenta_id, cuenta_padre_id, esta_activa, objeto_gasto_id, user_id } = req.body;
   
     try {
       const cuenta = await db.Cuenta.findByPk(id);
@@ -89,6 +90,7 @@ exports.getAllCuentas = async (req, res) => {
       if (nivel_cuenta_id) cuenta.nivel_cuenta_id = nivel_cuenta_id;
       if (cuenta_padre_id !== undefined) cuenta.cuenta_padre_id = cuenta_padre_id;
       if (esta_activa !== undefined) cuenta.esta_activa = esta_activa;
+      if (objeto_gasto_id !== undefined) cuenta.objeto_gasto_id = objeto_gasto_id;
   
       await cuenta.save();
   
