@@ -2,10 +2,11 @@
 import global_vars from '@/config/global_vars';
 import NavBar from '../components/NavBar.vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ComboBox from '../components/ComboBox.vue';
 
 const route = useRoute();
+const router = useRouter();
 
 const id = route.params.id;
 const user_id = sessionStorage.getItem('user_id');
@@ -68,7 +69,7 @@ const handleSubmit = async () => {
 const handleUpdate = async () => {
     try {
         const response = await fetch(`${global_vars.api_url}/users/update/${id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -80,6 +81,8 @@ const handleUpdate = async () => {
             errorMessage.value = data.message;
             return;
         }
+
+        router.push('/seguridad/usuarios');
     } catch (error){
         console.log(error);
         errorMessage.value = 'Error al actualizar el usuario.';
