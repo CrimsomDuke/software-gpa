@@ -83,6 +83,18 @@ const routes = [
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },
     { path: '/register', name: 'Register', component : RegisterView },
+
+        // Redirects// En tu archivo de rutas
+    {
+      path: '/contable/transacciones/nueva',
+      name: 'NuevaTransaccion',
+      component: () => import('@/views/contable/FormTransacciones.vue')
+    },
+    {
+      path: '/contable/transacciones/:id/editar',
+      name: 'EditarTransaccion',
+      component: () => import('@/views/contable/FormTransacciones.vue')
+    }
 ];
 
 const router = createRouter({

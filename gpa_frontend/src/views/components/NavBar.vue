@@ -35,7 +35,7 @@
           <li><router-link to="/presupuesto/ejecucion">Ejecución de Presupuesto</router-link></li>
         </ul>
       </li>
-          
+
       <li><router-link to="/plan_cuentas/cuentas">Plan de cuentas</router-link></li>
       <li class="has-submenu" @click="toggleSubmenu('contable')">
         <div class="menu-item">
@@ -44,6 +44,7 @@
         </div>
         <ul class="submenu" v-show="openSubmenus.contable">
           <li><router-link to="/contable/transacciones">Transacciones</router-link></li>
+          <li><router-link to="/contable/transacciones/nueva">Nueva Transacción</router-link></li>
           <li><router-link to="/contable/periodos_fiscales">Periodos Fiscales</router-link></li>
         </ul>
       </li>

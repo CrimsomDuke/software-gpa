@@ -43,6 +43,178 @@ exports.createPeriodoFiscal = async (req, res) => {
     }
 }
 
+// ...existing code...
+
+exports.getPeriodoFiscalById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const periodoFiscal = await db.PeriodoFiscal.findByPk(id, {
+            include: [
+                { model: db.User, as: 'cerrado_por', attributes: ['id', 'username', 'fullname'] }
+            ]
+        });
+        
+        if (!periodoFiscal) {
+            return res.status(404).json({ success: false, message: 'Período fiscal no encontrado' });
+        }
+        
+        return res.status(200).json({ success: true, data: periodoFiscal });
+    } catch (error) {
+        console.error('Error fetching Periodo Fiscal:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+exports.updatePeriodoFiscal = async (req, res) => {
+    const { id } = req.params;
+    const { nombre, fecha_inicio, fecha_fin, user_id } = req.body;
+    
+    try {
+        const periodoFiscal = await db.PeriodoFiscal.findByPk(id);
+        if (!periodoFiscal) {
+            return res.status(404).json({ success: false, message: 'Período fiscal no encontrado' });
+        }
+        
+        // Verificar si está cerrado
+        if (periodoFiscal.esta_cerrado) {
+            return res.status(400).json({ success: false, message: 'No se puede modificar un período fiscal cerrado' });
+        }
+        
+        // Validar si existe otro período con el mismo nombre
+        if (nombre && nombre !== periodoFiscal.nombre) {
+            const existingPeriodo = await db.PeriodoFiscal.findOne({ 
+                where: { nombre, id: { [db.Sequelize.Op.ne]: id } } 
+            });
+            if (existingPeriodo) {
+                return res.status(400).json({ success: false, message: 'Ya existe un período fiscal con ese nombre' });
+            }
+        }
+        
+        // Actualizar campos
+        const updatedFields = {};
+        if (nombre) updatedFields.nombre = nombre;
+        if (fecha_inicio) updatedFields.fecha_inicio = fecha_inicio;
+        if (fecha_fin) updatedFields.fecha_fin = fecha_fin;
+        
+        await periodoFiscal.update(updatedFields);
+        
+        // Audit log
+        if (user_id) {
+            await auditLogService.createAuditLog('update', user_id, 'PeriodoFiscal', periodoFiscal.id);
+        }
+        
+        return res.status(200).json({ success: true, data: periodoFiscal });
+    } catch (error) {
+        console.error('Error updating Periodo Fiscal:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error: ' + error.message });
+    }
+};
+
+exports.deletePeriodoFiscal = async (req, res) => {
+    const { id } = req.params;
+    const { user_id } = req.body;
+    
+    try {
+        const periodoFiscal = await db.PeriodoFiscal.findByPk(id);
+        if (!periodoFiscal) {
+            return res.status(404).json({ success: false, message: 'Período fiscal no encontrado' });
+        }
+        
+        // Verificar si tiene transacciones asociadas
+        const transacciones = await db.Transaccion.count({ where: { periodo_fiscal_id: id } });
+        if (transacciones > 0) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'No se puede eliminar un período fiscal que tiene transacciones asociadas' 
+            });
+        }
+        
+        await periodoFiscal.destroy();
+        
+        // Audit log
+        if (user_id) {
+            await auditLogService.createAuditLog('delete', user_id, 'PeriodoFiscal', id);
+        }
+        
+        return res.status(200).json({ success: true, message: 'Período fiscal eliminado correctamente' });
+    } catch (error) {
+        console.error('Error deleting Periodo Fiscal:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error: ' + error.message });
+    }
+};
+
+exports.cerrarPeriodoFiscal = async (req, res) => {
+    const { id } = req.params;
+    const { user_id } = req.body;
+    
+    try {
+        const periodoFiscal = await db.PeriodoFiscal.findByPk(id);
+        if (!periodoFiscal) {
+            return res.status(404).json({ success: false, message: 'Período fiscal no encontrado' });
+        }
+        
+        if (periodoFiscal.esta_cerrado) {
+            return res.status(400).json({ success: false, message: 'El período fiscal ya está cerrado' });
+        }
+        
+        // Cerrar período
+        await periodoFiscal.update({
+            esta_cerrado: true,
+            fecha_cierre: new Date(),
+            cerrado_por_id: user_id
+        });
+        
+        // Audit log
+        if (user_id) {
+            await auditLogService.createAuditLog('close', user_id, 'PeriodoFiscal', periodoFiscal.id);
+        }
+        
+        return res.status(200).json({ success: true, data: periodoFiscal, message: 'Período fiscal cerrado correctamente' });
+    } catch (error) {
+        console.error('Error closing Periodo Fiscal:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error: ' + error.message });
+    }
+};
+
+exports.generarAsientos = async (req, res) => {
+    const { id } = req.params;
+    const { user_id, tipo_asiento } = req.body; // tipo_asiento: 'apertura' o 'cierre'
+    
+    try {
+        const periodoFiscal = await db.PeriodoFiscal.findByPk(id);
+        if (!periodoFiscal) {
+            return res.status(404).json({ success: false, message: 'Período fiscal no encontrado' });
+        }
+        
+        // Aquí implementarías la lógica para generar asientos de apertura o cierre
+        // Por ejemplo, generar asientos de cierre basados en las cuentas de resultado
+        
+        const referencia = `${tipo_asiento.toUpperCase()}-${periodoFiscal.nombre}-${Date.now()}`;
+        
+        const nuevaTransaccion = await db.Transaccion.create({
+            referencia: referencia,
+            descripcion: `Asiento de ${tipo_asiento} - ${periodoFiscal.nombre}`,
+            fecha: tipo_asiento === 'apertura' ? periodoFiscal.fecha_inicio : periodoFiscal.fecha_fin,
+            tipo_transaccion: tipo_asiento,
+            es_generado_sistema: true,
+            periodo_fiscal_id: id,
+            usuario_id: user_id
+        });
+        
+        // Audit log
+        await auditLogService.createAuditLog('generate_entries', user_id, 'PeriodoFiscal', id);
+        
+        return res.status(201).json({ 
+            success: true, 
+            data: nuevaTransaccion, 
+            message: `Asientos de ${tipo_asiento} generados correctamente` 
+        });
+    } catch (error) {
+        console.error('Error generando asientos:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error: ' + error.message });
+    }
+};
+
 const validatePeriodoFiscalFields = (req) => {
     const { nombre, fecha_inicio, fecha_fin, user_id } = req.body;
     let errors = {};
