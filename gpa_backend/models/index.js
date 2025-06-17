@@ -58,6 +58,11 @@ Cuenta.hasMany(Cuenta, {
     as: 'subcuentas'
 });
 
+Cuenta.hasMany(DetalleTransaccion, {
+    foreignKey: 'cuenta_id',
+    as: 'detalles'
+});
+
 //TRANSACCION
 PeriodoFiscal.hasMany(Transaccion, {
     foreignKey: 'periodo_fiscal_id',

@@ -23,6 +23,7 @@ let corsOptions = {
  app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 db.sequelizeInst.sync({}).then(() => {
+    // db.sequelizeInst.sync({ force: true }) // Uncomment to drop and recreate the database
     console.log("Database Ready for the action")
 }).catch((err) => {
     console.error("The Database is dead and we killed it...", err)
