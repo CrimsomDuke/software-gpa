@@ -31,10 +31,6 @@ module.exports = (sequelizeInst) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        cuenta_id: { 
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         modificado_por_id: { 
             type: DataTypes.INTEGER,
             allowNull: true

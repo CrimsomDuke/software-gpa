@@ -1,10 +1,12 @@
 const db = require('../models/');
+const periodo_fiscal = require('../models/periodo_fiscal');
 
 exports.getComparacionPresupuesto = async (req, res) => {
     try {
         const presupuestos = await db.Presupuesto.findAll({
             include: [
-                { model: db.ObjetoGasto, as: 'objeto_gasto' }
+                { model: db.ObjetoGasto, as: 'objeto_gasto' },
+                { model: db.PeriodoFiscal, as: 'periodo_fiscal' }
             ]
         });
 
@@ -30,6 +32,7 @@ exports.getComparacionPresupuesto = async (req, res) => {
             return {
                 presupuestoId: presupuesto.id,
                 objetoGasto: presupuesto.objeto_gasto ? presupuesto.objeto_gasto.nombre : null,
+                periodo_fiscal : presupuesto.periodo_fiscal.nombre,
                 montoPlanificado: parseFloat(presupuesto.monto_inicial),
                 montoEjecutado: parseFloat(montoEjecutado),
                 diferencia: parseFloat(presupuesto.monto_inicial) - parseFloat(montoEjecutado)

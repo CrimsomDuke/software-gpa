@@ -48,8 +48,8 @@ exports.createPresupuesto = async (req, res) => {
     const { monto_inicial, periodo_fiscal_id, centro_costo_id, objeto_gasto_id, cuenta_id, user_id } = req.body;
 
     try {
-        if (!monto_inicial || !periodo_fiscal_id || !centro_costo_id || !objeto_gasto_id || !cuenta_id || !user_id) {
-            return res.status(400).json({ message: 'Todos los campos son requeridos: monto_inicial, periodo_fiscal_id, centro_costo_id, objeto_gasto_id, cuenta_id, user_id' });
+        if (!monto_inicial || !periodo_fiscal_id || !centro_costo_id || !objeto_gasto_id  || !user_id) {
+            return res.status(400).json({ message: 'Todos los campos son requeridos: monto_inicial, periodo_fiscal_id, centro_costo_id, objeto_gasto_id, user_id' });
         }
 
         const centroCosto = await db.CentroCosto.findByPk(centro_costo_id);
@@ -67,7 +67,6 @@ exports.createPresupuesto = async (req, res) => {
             periodo_fiscal_id,
             centro_costo_id,
             objeto_gasto_id,
-            cuenta_id,
             creado_por: user_id,
             esta_activo: true
         });
@@ -114,7 +113,6 @@ exports.patchPresupuesto = async (req, res) => {
             fecha_modificacion: fecha_modificacion || presupuesto.fecha_modificacion,
             centro_costo_id: centro_costo_id || presupuesto.centro_costo_id,
             objeto_gasto_id: objeto_gasto_id || presupuesto.objeto_gasto_id,
-            cuenta_id: cuenta_id || presupuesto.cuenta_id,
             modificado_por_id: modificado_por_id || presupuesto.modificado_por_id
         });
 
