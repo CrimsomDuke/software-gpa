@@ -1,22 +1,56 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import NavBar from '@/views/components/NavBar.vue';
+import global_vars from '@/config/global_vars';
+
+const centrosCosto = ref([]);
+const loading = ref(true);
+const errorMessage = ref('');
+
+const fetchCentrosCosto = async () => {
+  try {
+    const response = await fetch(`${global_vars.api_url}/centro_costo`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    centrosCosto.value = await response.json();
+
+  } catch (err) {
+    console.error(err);
+    errorMessage.value = 'Error cargando los centros de costo';
+  } finally {
+    loading.value = false;
+  }
+}
+
+// Llama al endpoint real cuando se monta el componente
+onMounted(fetchCentrosCosto);
+</script>
 
 <template>
   <div class="d-flex">
-    <!-- Menú de navegación -->
-    <Navbar />
+    <NavBar />
 
-    <!-- Contenedor principal -->
     <div class="container-fluid d-flex">
-      <!-- Tabla para mostrar los centros de costo -->
       <div class="card flex-grow-1 ms-3">
         <h3>Lista de Centros de Costo</h3>
-        <table class="table table-striped table-bordered">
+
+        <div>
+          <router-link to="/clasificadores/centros_costo/form" class="btn btn-primary mb-3">Crear Centro de Costo</router-link>
+        </div>
+
+        <div v-if="error" class="text-danger">{{ error }}</div>
+        <table v-else class="table table-striped table-bordered">
           <thead>
             <tr>
-              <th class = "gradient-blue text-white">ID</th>
-              <th class = "gradient-blue text-white">Código</th>
-              <th class = "gradient-blue text-white">Nombre</th>
-              <th class = "gradient-blue text-white">Descripción</th>
-              <th class = "gradient-blue text-white">Activo</th>
+              <th class="gradient-blue text-white">ID</th>
+              <th class="gradient-blue text-white">Código</th>
+              <th class="gradient-blue text-white">Nombre</th>
+              <th class="gradient-blue text-white">Descripción</th>
+              <th class="gradient-blue text-white">Activo</th>
+              <th class="gradient-blue text-white">Editar</th>
             </tr>
           </thead>
           <tbody>
@@ -26,6 +60,11 @@
               <td>{{ centro.nombre }}</td>
               <td>{{ centro.descripcion }}</td>
               <td>{{ centro.esta_activo ? 'Sí' : 'No' }}</td>
+              <td>
+                  <router-link :to="{ name: 'CentroCostoFormEdit', params: { id: centro.id } }" class="btn btn-primary">
+                    Editar
+                  </router-link>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -33,20 +72,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import Navbar from '@/views/components/NavBar.vue';
-import { ref } from 'vue';
-
-// Datos ficticios
-const centrosCosto = ref([
-  { id: 1, codigo: 'CC001', nombre: 'Administración', descripcion: 'Centro de costo para administración', esta_activo: true },
-  { id: 2, codigo: 'CC002', nombre: 'Producción', descripcion: 'Centro de costo para producción', esta_activo: true },
-  { id: 3, codigo: 'CC003', nombre: 'Ventas', descripcion: 'Centro de costo para ventas', esta_activo: false },
-  { id: 4, codigo: 'CC004', nombre: 'Logística', descripcion: 'Centro de costo para logística', esta_activo: true },
-  { id: 5, codigo: 'CC005', nombre: 'Recursos Humanos', descripcion: 'Centro de costo para recursos humanos', esta_activo: true },
-]);
-</script>
 
 <style scoped>
 .d-flex {
@@ -69,7 +94,8 @@ const centrosCosto = ref([
   border-collapse: collapse;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
@@ -77,5 +103,9 @@ const centrosCosto = ref([
 
 .table th {
   background-color: #f4f4f4;
+}
+
+.gradient-blue {
+  background: linear-gradient(to right, #007bff, #0056b3);
 }
 </style>

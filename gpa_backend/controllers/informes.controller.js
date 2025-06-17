@@ -1,8 +1,8 @@
-import { where } from 'sequelize';
-import db from '../models/index.js';
-import AuditLogService from '../services/audit_log.service.js';
+const { Op } = require('sequelize');
+const db = require('../models/index.js');
+const AuditLogService = require('../services/audit_log.service.js');
 
-export const libroDiario = async (req, res) => {
+exports.libroDiario = async (req, res) => {
     const { periodo_fiscal_id, fecha_inicio, fecha_fin } = req.query;
     try {
 
@@ -11,7 +11,7 @@ export const libroDiario = async (req, res) => {
         }
         const where = {};
         if (periodo_fiscal_id) where.periodo_fiscal_id = periodo_fiscal_id;
-        if (fecha_inicio && fecha_fin) where.fecha = { [db.Sequelize.Op.between]: [fecha_inicio, fecha_fin] };
+        if (fecha_inicio && fecha_fin) where.fecha = { [Op.between]: [fecha_inicio, fecha_fin] };
 
         const transacciones = await db.Transaccion.findAll({
             where,
@@ -69,7 +69,7 @@ export const libroDiario = async (req, res) => {
 //   .then(res => res.json())
 //   .then(data => console.log(data));
 
-export const libroMayor = async (req, res) => {
+exports.libroMayor = async (req, res) => {
     const { cuenta_id, periodo_fiscal_id, fecha_inicio, fecha_fin } = req.query;
     try {
         if (!cuenta_id && !periodo_fiscal_id) {
@@ -133,7 +133,7 @@ export const libroMayor = async (req, res) => {
 
 };
 
-export const balanceGeneral = async (req, res) => {
+exports.balanceGeneral = async (req, res) => {
     const { fecha_corte } = req.query;
 
     try {
@@ -200,7 +200,7 @@ export const balanceGeneral = async (req, res) => {
     }
 }
 
-export const estadoResultados = async (req, res) => {
+exports.estadoResultados = async (req, res) => {
     const { periodo_fiscal_id, fecha_inicio, fecha_fin } = req.query;
 
     try {
@@ -273,7 +273,7 @@ export const estadoResultados = async (req, res) => {
     }
 }
 
-export const balanceComprobacion = async (req, res) => {
+exports.balanceComprobacion = async (req, res) => {
     const { periodo_fiscal_id, fecha_inicio, fecha_fin } = req.query;
 
     try {

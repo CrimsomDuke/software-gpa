@@ -38,6 +38,7 @@ import TransaccionesContables from "@/views/contable/TransaccionesContables.vue"
 import EjecucionPresupuestoView from "@/views/clasificadores/Presupuesto/EjecucionPresupuestoView.vue";
 import PresupuestoView from "@/views/clasificadores/Presupuesto/PresupuestoView.vue";
 import ListaRolesView from "@/views/seguridad/ListaRolesView.vue";
+import CentroDeCostoForm from "@/views/clasificadores/CentroDeCosto/CentroDeCostoForm.vue";
 const routes = [
     // Require login
     { path: '/', name: 'Home', component: Home, beforeEnter: Guards.IsAuthenticatedGuard },
@@ -63,6 +64,8 @@ const routes = [
     { path: '/clasificadores/tipos_cuenta/form', name: 'TipoCuentasFormCreate', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/tipos_cuenta/form/:id', name: 'TipoCuentasFormEdit', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/centros_costo', name: 'CentrosCosto', component: CentroDeCostoView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/centros_costo/form', name: 'CentroCostoFormCreate', component: CentroDeCostoForm, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/centros_costo/form/:id', name: 'CentroCostoFormEdit', component: CentroDeCostoForm, beforeEnter: Guards.IsAuthenticatedGuard },
     { path: '/clasificadores/objetos_gasto', name: 'ObjetosGasto', component: ObjetoDeGastosView, beforeEnter: Guards.IsAuthenticatedGuard },
     // Presupuesto
     { path: '/presupuesto/ejecucion', name: 'EjecucionPresupuesto', component: EjecucionPresupuestoView, beforeEnter: Guards.IsAuthenticatedGuard },
