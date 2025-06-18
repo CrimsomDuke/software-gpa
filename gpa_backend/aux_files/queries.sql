@@ -13,3 +13,5 @@ SELECT * FROM "Presupuestos";
 SELECT * FROM "Cuenta" c;
 SELECT * FROM "Transaccions" t;
 SELECT * FROM "DetalleTransaccions" dt;
+
+SELECT * FROM "Roles"

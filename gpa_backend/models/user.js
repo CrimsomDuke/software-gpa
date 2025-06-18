@@ -30,9 +30,9 @@ module.exports = (sequelizeInst) =>{
             type: DataTypes.BOOLEAN,
             defaultValue: true,
         },
-        role : {
-            type: DataTypes.ENUM('admin', 'contador', 'auxiliar'),
-            defaultValue: 'contador',
+        role_id : {
+            type : DataTypes.INTEGER,
+            allowNull: true,
         }
     });
 

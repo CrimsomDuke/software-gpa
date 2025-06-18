@@ -3,6 +3,7 @@ const { sequelizeInst, Sequelize } = require('../config/db.config');
 
 const Persona = require('./persona')(sequelizeInst);
 const User = require('./user')(sequelizeInst);
+const Role = require('./role')(sequelizeInst);
 const AuditLog = require('./audit_log')(sequelizeInst);
 const TipoCuenta = require('./tipo_cuenta')(sequelizeInst);
 const NivelCuenta = require('./nivel_cuenta')(sequelizeInst);
@@ -26,6 +27,18 @@ Persona.belongsTo(User, {
     foreignKey: 'user_id',
     as: 'user'
 });
+
+//user roles
+User.hasOne(Role, {
+    foreignKey: 'id',
+    as: 'role'
+})
+
+Role.hasMany(User, {
+    foreignKey: 'role_id',
+    as: 'users'
+});
+
 
 //CUENTA
 TipoCuenta.hasMany(Cuenta, {
@@ -160,6 +173,7 @@ sequelizeInst.sync({
 
 module.exports = {
     User,
+    Role,
     AuditLog,
     TipoCuenta,
     NivelCuenta,

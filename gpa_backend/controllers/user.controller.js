@@ -6,7 +6,7 @@ const sha1 = require('sha1');
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await db.User.findAll();
+        const users = await db.User.findAll({include: [{ model: db.Role, as: 'role' }] });
 
         users.forEach(element => {
             element.password = undefined;
@@ -22,7 +22,12 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
     const { id } = req.params;
     try {
-        const user = await db.User.findByPk(id);
+        const user = await db.User.findByPk(id, {
+            include: [{
+                model: db.Role,
+                as: 'role'
+            }]
+        });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -36,21 +41,23 @@ exports.getUserById = async (req, res) => {
 
 exports.registerUser = async (req, res) => {
     console.log(req.body)
-    const { username, fullname, email, password, role } = req.body;
+    const { username, fullname, email, password, role_id } = req.body;
 
     const validationError = validateUserFields(req);
     if(validationError !== ''){
         return res.status(400).json({ message: validationError });
     }
 
-    if(global_vars.user_roles.indexOf(role) === -1){
-        return res.status(400).json({ message: 'Invalid role' });
-    }
     try {
 
         const existingUser = await db.User.findOne({ where: { username : username } });
         if (existingUser) {
             return res.status(400).json({ message: 'Usuario ya existe' });
+        }
+
+        const role = await db.Role.findByPk(role_id);
+        if (!role) {
+            return res.status(404).json({ message: 'Rol no encontrado' });
         }
 
         const hashedPassword = await sha1(password); // Hash the password using sha1
@@ -60,7 +67,7 @@ exports.registerUser = async (req, res) => {
             fullname : fullname,
             email : email,
             password: hashedPassword, // Hash the password before saving it
-            role : role,
+            role_id : role.id,
         });
 
         // Create an audit log for user creation
@@ -98,22 +105,32 @@ exports.loginUser = async (req, res) => {
 
 exports.changeUserRole = async (req, res) => {
     const { id } = req.params;
-    const { role, user_edit_id } = req.body;
-
-    if(global_vars.user_roles.indexOf(role) === -1){
-        return res.status(400).json({ message: 'Rol invalido' });
-    }
+    const { role_id, user_edit_id } = req.body;
 
     if(!user_edit_id){
             return res.status(400).json({ message: 'ID de usuario que edita es requerido' });
     }
     try {
-        const user = await db.User.findByPk(id);
+        const user = await db.User.findByPk(id, {
+            include: [{
+                model: db.Role,
+                as: 'role'
+            }]
+        });
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        user.role = role;
+        const role = await db.Role.findByPk(role_id);
+        if (!role) {
+            return res.status(404).json({ message: 'Rol no encontrado' });
+        }
+
+        if(user.role_id && user.role.level <= role.level){
+            return res.status(403).json({ message: 'No tienes permisos para cambiar el rol a un nivel superior o igual al actual' });
+        }
+
+        user.role_id = role.id;
         await user.save();
 
         // Create an audit log for user role change
@@ -128,7 +145,7 @@ exports.changeUserRole = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
-    const { username, fullname, email, password, role, user_edit_id } = req.body;
+    const { username, fullname, email, password, role_id, user_edit_id } = req.body;
 
     try {
         const user = await db.User.findByPk(id);
@@ -149,8 +166,17 @@ exports.updateUser = async (req, res) => {
         if(email){
             user.email = email;
         }
-        if(role && global_vars.user_roles.indexOf(role) !== -1){
-            user.role = role;
+        if(role_id){
+            const role = await db.Role.findByPk(role_id);
+            if (!role) {
+                return res.status(404).json({ message: 'Rol no encontrado' });
+            }
+
+            if(user.role_id && user.role.level <= role.level){
+                return res.status(403).json({ message: 'No tienes permisos para cambiar el rol a un nivel superior o igual al actual' });
+            }
+
+            user.role_id = role.id;
         }
 
         if (password) {
