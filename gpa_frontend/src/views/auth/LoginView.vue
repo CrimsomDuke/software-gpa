@@ -2,8 +2,10 @@
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import global_vars from '@/config/global_vars';
+import { useUserStore } from '@/stores/user_store';
 
 const router = useRouter();
+const userStore = useUserStore();
 
 const form = ref({
   username: '',
@@ -26,6 +28,7 @@ const handleLogin = async () => {
 
     if (response.ok) {
       sessionStorage.setItem('user_id', data.id);
+      await userStore.setUser()
       router.push("/");
     } else {
       errorMessage.value = data.message || 'Error de autenticación. Por favor, verifica tus credenciales.';

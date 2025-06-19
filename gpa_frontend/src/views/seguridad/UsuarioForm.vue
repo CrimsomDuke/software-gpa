@@ -1,28 +1,31 @@
 <script setup>
 import global_vars from '@/config/global_vars';
 import NavBar from '../components/NavBar.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, toRaw } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ComboBox from '../components/ComboBox.vue';
+import { useUserStore } from '@/stores/user_store';
 
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 
 const id = route.params.id;
-const user_id = sessionStorage.getItem('user_id');
-const is_same_user = (user_id == id);
-
-const canUserRoleBeChanged = true;
+const current_user = toRaw(userStore.user);
+const is_same_user = (current_user.id == id);
 
 const errorMessage = ref('');
+const roles = ref([]);
+
+const canUserRoleBeChanged = ref(false);
 
 const form = ref({
     username : '',
     fullname : '',
     email : '',
     is_active : false,
-    role : '',
-    user_edit_id : user_id
+    role_id : 0,
+    user_edit_id : current_user.id
 })
 
 const fetchUserData = async () => {
@@ -40,15 +43,39 @@ const fetchUserData = async () => {
             form.value.fullname = data.fullname;
             form.value.email = data.email;
             form.value.is_active = data.is_active;
-            form.value.role = data.role;
+            if(!data.role_id){
+                form.value.role_id = roles.value[0]; //si no tiene rol, se asigna 0
+            } else {
+                form.value.role_id = data.role_id;
+            }
 
             //si el usuario es admin, nadie deberia poder cambiar su rol
-            canUserRoleBeChanged = (data.role == 'admin') || data.id == user_id;
+            console.log(current_user.role)
+            canUserRoleBeChanged.value = (!data.role) || (current_user.role.level > data.role.level); 
         } else {
             errorMessage.value = 'Error al obtener los datos del usuario.';
         }
     } catch (error) {
         console.error('Error al obtener los datos del usuario:', error);
+    }
+}
+
+const fetchRoles = async() => {
+    try {
+        const response = await fetch(`${global_vars.api_url}/roles`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            roles.value = await response.json();
+        } else {
+            errorMessage.value = 'Error al obtener los roles.';
+        }
+    } catch (error) {
+        console.error('Error al obtener los roles:', error);
     }
 }
 
@@ -99,6 +126,7 @@ const validateForm = () => {
 onMounted(() => {
     if (id) {
         fetchUserData();
+        fetchRoles();
     }
 });
 
@@ -129,8 +157,8 @@ onMounted(() => {
                         </div>
                         <div class="form-group">
                             <label for="role" class="form-label">Rol</label>
-                            <ComboBox is-primitive-array="true" :data-source="global_vars.ROLES"
-                                :default-value="form.role" :disabled="canUserRoleBeChanged"/>
+                            <ComboBox :data-source="roles" text-field="name" value-field="id"
+                                :default-value="form.role_id" v-model="form.role_id" :disabled="!canUserRoleBeChanged"/>
                         </div>
                         <div v-if="!is_same_user" class="form-group p-1 m-3">
                             <input type="checkbox" id="is_active" v-model="form.is_active" class="form-check-input-lg check-box-lg me-3">

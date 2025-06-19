@@ -60,12 +60,22 @@
         </ul>
       </li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
+      <li>
+        <div class="menu-item" @click="toggleSubmenu('opciones')">
+          <span>Opciones</span>
+          <span class="arrow" :class="{ rotated: openSubmenus.opciones }">›</span>
+        </div>
+        <ul class="submenu" v-show="openSubmenus.opciones">
+          <li><button v-on:click="logout">Cerrar sesión</button></li>
+        </ul>
+      </li>
     </ul>
   </nav>
 </template>
 
 <script setup>
 
+import global_vars from '@/config/global_vars';
 import { ref } from 'vue';
 
 const openSubmenus = ref({
@@ -73,11 +83,18 @@ const openSubmenus = ref({
   seguridad: false,
   informes: false,
   contable: false,
+  opciones: false,
 });
 
 const toggleSubmenu = (menu) => {
   openSubmenus.value[menu] = !openSubmenus.value[menu];
 };
+
+const logout = async() => {
+  sessionStorage.removeItem('user_id');
+  window.location.href = global_vars.BASE_URL + '/login';
+}
+
 </script>
 
 <style scoped>
@@ -106,7 +123,7 @@ const toggleSubmenu = (menu) => {
   margin: 10px 0;
 }
 
-.sidebar a {
+.sidebar a, .sidebar button {
   color: white;
   text-decoration: none;
   display: block;
@@ -117,6 +134,12 @@ const toggleSubmenu = (menu) => {
 .sidebar a.router-link-exact-active {
   background: linear-gradient(to right, #386dff, #000000);
   color: white;
+}
+
+.sidebar button{
+    background: linear-gradient(to right, #df3434, #000000);
+    color: white;
+    width: 100%;
 }
 
 .has-submenu {

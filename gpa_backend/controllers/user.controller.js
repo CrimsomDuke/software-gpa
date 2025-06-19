@@ -148,13 +148,25 @@ exports.updateUser = async (req, res) => {
     const { username, fullname, email, password, role_id, user_edit_id } = req.body;
 
     try {
-        const user = await db.User.findByPk(id);
+        const user = await db.User.findByPk(id, { include : [{ model: db.Role, as: 'role' }] });
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
         if(!user_edit_id){
             return res.status(400).json({ message: 'ID de usuario que edita es requerido' });
+        }
+
+        const userEdit = await db.User.findByPk(user_edit_id, {
+            include: [{
+                model: db.Role,
+                as: 'role'
+            }]
+        });
+
+        if (!userEdit) {
+            return res.status(404).json({ message: 'Usuario que edita no encontrado'
+            });
         }
 
         if(username){
@@ -172,7 +184,8 @@ exports.updateUser = async (req, res) => {
                 return res.status(404).json({ message: 'Rol no encontrado' });
             }
 
-            if(user.role_id && user.role.level <= role.level){
+            if(userEdit.role_id && userEdit.role.level <= role.level){
+                console.log(userEdit.role.level, role.level);
                 return res.status(403).json({ message: 'No tienes permisos para cambiar el rol a un nivel superior o igual al actual' });
             }
 

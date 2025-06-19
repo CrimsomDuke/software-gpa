@@ -27,6 +27,10 @@ const props = defineProps({
     disabled : {
         type: Boolean,
         default: false,
+    },
+    orderBy : {
+        type: String,
+        default: null,
     }
 })
 //Con emit se emiten eventos al padre
@@ -34,7 +38,13 @@ const emit = defineEmits(['update:modelValue']);
 const selectedValue = ref(null);
 
 onMounted(() => {
-    selectedValue.value = props.defaultValue;
+    if (!props.defaultValue && props.dataSource.length > 0) {
+        selectedValue.value = props.isPrimitiveArray
+            ? props.dataSource[0]
+            : props.dataSource[0][props.valueField];
+    } else {
+        selectedValue.value = props.defaultValue;
+    }
     emit('update:modelValue', selectedValue.value);
     console.log('Selected value:', selectedValue.value);
 });

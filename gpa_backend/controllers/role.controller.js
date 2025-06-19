@@ -101,7 +101,7 @@ exports.updateRole = async (req, res) => {
         }
 
         if(name){
-            role.name = role.name; // 
+            role.name = name; // 
         }
         if(description){
             role.description = description; // 

@@ -40,52 +40,49 @@ import PresupuestoView from "@/views/clasificadores/Presupuesto/PresupuestoView.
 import ListaRolesView from "@/views/seguridad/ListaRolesView.vue";
 import CentroDeCostoForm from "@/views/clasificadores/CentroDeCosto/CentroDeCostoForm.vue";
 import ObjetoDeGastoForm from "@/views/clasificadores/ObjetoDeGastos/ObjetoDeGastoForm.vue";
+import RolForm from "@/views/seguridad/RolForm.vue";
+
 const routes = [
     // Require login
-    { path: '/', name: 'Home', component: Home, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/about', name: 'About', component: About, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/', name: 'Home', component: Home, beforeEnter: await Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    { path: '/about', name: 'About', component: About, beforeEnter: await Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //SEGURIDAD
-    { path: '/seguridad/usuarios', name: 'Usuarios', component: ListaUsuariosView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/seguridad/usuarios/form', name: 'UsuariosFormCreate', component: UsuarioForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/seguridad/usuarios/form/:id', name: 'UsuariosFormEdit', component: UsuarioForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/seguridad/roles', name: 'Roles', component: ListaRolesView, beforeEnter: Guards.IsAuthenticatedGuard },
-
-    { path: '/dashboard', name: 'Dashboard', component: DashboardView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/employees', name: 'Employees', component: EmployeesView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/departments', name: 'Departments', component: DepartmentsView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/positions', name: 'Positions', component: PositionsView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/reports', name: 'Reports', component: ReportsView, beforeEnter: Guards.IsAuthenticatedGuard },
-
+    { path: '/seguridad/usuarios', name: 'Usuarios', component: ListaUsuariosView, beforeEnter: await Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 10 } },
+    { path: '/seguridad/usuarios/form', name: 'UsuariosFormCreate', component: UsuarioForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 10 } },
+    { path: '/seguridad/usuarios/form/:id', name: 'UsuariosFormEdit', component: UsuarioForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 10 } },
+    { path: '/seguridad/roles', name: 'Roles', component: ListaRolesView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 10 } },
+    { path: '/seguridad/roles/form', name: 'RolesFormCreate', component: RolForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 10 } },
+    { path: '/seguridad/roles/form/:id', name: 'RolesFormEdit', component: RolForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 10 } },
     // Clasificadores
-    { path: '/clasificadores/niveles_cuenta', name: 'Niveles de Cuenta', component: ListaNivelesCuentaView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/niveles_cuenta/form', name: 'NivelCuentasFormCreate', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/niveles_cuenta/form/:id', name: 'NivelCuentasFormEdit', component: NivelCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/tipos_cuenta', name: 'TiposCuenta', component: ListaTiposCuenaView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/tipos_cuenta/form', name: 'TipoCuentasFormCreate', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/tipos_cuenta/form/:id', name: 'TipoCuentasFormEdit', component: TipoCuentaForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/centros_costo', name: 'CentrosCosto', component: CentroDeCostoView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/centros_costo/form', name: 'CentroCostoFormCreate', component: CentroDeCostoForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/centros_costo/form/:id', name: 'CentroCostoFormEdit', component: CentroDeCostoForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/objetos_gasto', name: 'ObjetosGasto', component: ObjetoDeGastosView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/objetos_gasto/form', name : 'ObjetoGastoFormCreate', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/objetos_gasto/form/:id', name : 'ObjetoGastoFormEdit', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/clasificadores/niveles_cuenta', name: 'Niveles de Cuenta', component: ListaNivelesCuentaView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/niveles_cuenta/form', name: 'NivelCuentasFormCreate', component: NivelCuentaForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/niveles_cuenta/form/:id', name: 'NivelCuentasFormEdit', component: NivelCuentaForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/tipos_cuenta', name: 'TiposCuenta', component: ListaTiposCuenaView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/tipos_cuenta/form', name: 'TipoCuentasFormCreate', component: TipoCuentaForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/tipos_cuenta/form/:id', name: 'TipoCuentasFormEdit', component: TipoCuentaForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/centros_costo', name: 'CentrosCosto', component: CentroDeCostoView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/centros_costo/form', name: 'CentroCostoFormCreate', component: CentroDeCostoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/centros_costo/form/:id', name: 'CentroCostoFormEdit', component: CentroDeCostoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/objetos_gasto', name: 'ObjetosGasto', component: ObjetoDeGastosView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/objetos_gasto/form', name : 'ObjetoGastoFormCreate', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    { path: '/clasificadores/objetos_gasto/form/:id', name : 'ObjetoGastoFormEdit', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
     
     // Presupuesto
-    { path: '/presupuesto/ejecucion', name: 'EjecucionPresupuesto', component: EjecucionPresupuestoView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/clasificadores/PresupuestoView', name: 'PresupuestoView', component: PresupuestoView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/presupuesto/ejecucion', name: 'EjecucionPresupuesto', component: EjecucionPresupuestoView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    { path: '/clasificadores/PresupuestoView', name: 'PresupuestoView', component: PresupuestoView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //CONTABLE
-    { path: '/contable/periodos_fiscales', name: 'PeriodosFiscales', component: PeriodosFiscales, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/contable/transacciones', name: 'TransaccionesContables', component: TransaccionesContables, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/contable/periodos_fiscales', name: 'PeriodosFiscales', component: PeriodosFiscales, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    { path: '/contable/transacciones', name: 'TransaccionesContables', component: TransaccionesContables, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //PLAN DE CUENTAS
-    { path: '/plan_cuentas/cuentas', name: 'Cuentas', component: ListaCuentasView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/plan_cuentas/cuentas', name: 'Cuentas', component: ListaCuentasView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //INFORMES
-    { path: '/informes/libro_mayor', name: 'LibroMayor', component: LibroMayorView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/informes/libro_diario', name: 'LibroDiario', component: LibroDiarioView, beforeEnter: Guards.IsAuthenticatedGuard },
-    { path: '/informes/balance_general', name:'BalanceGeneral', component: BalanceGeneralView, beforeEnter: Guards.IsAuthenticatedGuard },
+    { path: '/informes/libro_mayor', name: 'LibroMayor', component: LibroMayorView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    { path: '/informes/libro_diario', name: 'LibroDiario', component: LibroDiarioView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    { path: '/informes/balance_general', name:'BalanceGeneral', component: BalanceGeneralView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },
@@ -95,12 +92,14 @@ const routes = [
     {
       path: '/contable/transacciones/nueva',
       name: 'NuevaTransaccion',
-      component: () => import('@/views/contable/FormTransacciones.vue')
+      component: () => import('@/views/contable/FormTransacciones.vue'),
+      beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 }
     },
     {
       path: '/contable/transacciones/:id/editar',
       name: 'EditarTransaccion',
-      component: () => import('@/views/contable/FormTransacciones.vue')
+      component: () => import('@/views/contable/FormTransacciones.vue'),
+      beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 }
     }
 ];
 

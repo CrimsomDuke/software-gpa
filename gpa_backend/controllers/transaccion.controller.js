@@ -236,8 +236,8 @@ const validateTransaccionDetalles = (detalles) => {
             return `El detalle en posición ${index + 1} no tiene cuenta_id`;
         }
         
-        const hasDebito = typeof detalle.debito !== 'undefined' && detalle.debito !== null;
-        const hasCredito = typeof detalle.credito !== 'undefined' && detalle.credito !== null;
+        const hasDebito = typeof detalle.debito !== 'undefined' && detalle.debito !== null && detalle.debito !== 0;
+        const hasCredito = typeof detalle.credito !== 'undefined' && detalle.credito !== null && detalle.credito !== 0;
         
         if (!hasDebito && !hasCredito) {
             return `El detalle en posición ${index + 1} debe tener débito o crédito`;

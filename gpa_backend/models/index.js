@@ -29,15 +29,9 @@ Persona.belongsTo(User, {
 });
 
 //user roles
-User.hasOne(Role, {
-    foreignKey: 'id',
-    as: 'role'
-})
+User.belongsTo(Role, { foreignKey: 'role_id', as: 'role' });
 
-Role.hasMany(User, {
-    foreignKey: 'role_id',
-    as: 'users'
-});
+Role.hasMany(User, { foreignKey: 'role_id', as: 'users' });
 
 
 //CUENTA

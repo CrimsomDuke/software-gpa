@@ -1,16 +1,22 @@
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import global_vars from '@/config/global_vars';
+import { useUserStore } from '@/stores/user_store';
+import ComboBox from '../components/ComboBox.vue';
 
 const router = useRouter();
+const userStore = useUserStore();
+
 const form = ref({
   username: '',
   fullname: '',
   password: '',
   email: '',
-  role: 'auxiliar' //default role
+  role_id: 0
 })
+
+const roles = ref([]);
 
 const errorMessage = ref('');
 
@@ -28,6 +34,7 @@ const handleRegister = async () => {
 
     if (response.ok) {
       sessionStorage.setItem('user_id', data.id);
+      await userStore.setUser();
       router.push("/");
     } else {
       errorMessage.value = data.message || 'Error de autenticación. Por favor, verifica tus credenciales.';
@@ -37,6 +44,30 @@ const handleRegister = async () => {
     console.error('Error during login:', error);
   }
 }
+
+const fetchRoles = async() => {
+    try {
+        const response = await fetch(`${global_vars.api_url}/roles`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            roles.value = await response.json();
+        } else {
+            errorMessage.value = 'Error al obtener los roles.';
+        }
+    } catch (error) {
+        console.error('Error al obtener los roles:', error);
+    }
+}
+
+onMounted(() => {
+  fetchRoles();
+});
+
 </script>
 
 <template>
@@ -62,11 +93,8 @@ const handleRegister = async () => {
         </div>
         <div class="form-group">
           <label class="control-label">Rol:</label>
-          <select class="form-select" v-model="form.role" required>
-            <option value="admin">Admin</option>
-            <option value="contador">Contador</option>
-            <option value="auxiliar">Auxiliar</option>
-          </select>
+          <ComboBox :data-source="roles" text-field="name" value-field="id"
+            :default-value="form.role_id" v-model="form.role_id"/>
         </div>
         <div class="form-group d-flex align-content-center justify-content-center m-3">
           <button class="btn btn-primary" type="submit">Registrarse</button>
