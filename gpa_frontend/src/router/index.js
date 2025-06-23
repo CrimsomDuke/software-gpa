@@ -31,6 +31,8 @@ import ListaCuentasView from "@/views/plan_cuentas/ListaCuentasView.vue";
 import LibroMayorView from "@/views/informes/LibroMayorView.vue";
 import LibroDiarioView from "@/views/informes/LibroDiarioView.vue";
 import BalanceGeneralView from "@/views/informes/BalanceGeneralView.vue";
+import BalanceComprobacionView from "@/views/informes/BalanceComprobacionView.vue";
+import EstadoResultadosView from "@/views/informes/EstadoResultadosView.vue";
 import PeriodosFiscales from "@/views/contable/PeriodosFiscales.vue";
 import TransaccionesContables from "@/views/contable/TransaccionesContables.vue";
 
@@ -83,6 +85,8 @@ const routes = [
     { path: '/informes/libro_mayor', name: 'LibroMayor', component: LibroMayorView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     { path: '/informes/libro_diario', name: 'LibroDiario', component: LibroDiarioView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     { path: '/informes/balance_general', name:'BalanceGeneral', component: BalanceGeneralView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    {path: '/informes/balance_comprobacion', name: 'BalanceComprobacion', component: BalanceComprobacionView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    {path: '/informes/estado_resultados', name: 'EstadoResultados', component: EstadoResultadosView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },

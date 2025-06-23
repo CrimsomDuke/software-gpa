@@ -31,7 +31,7 @@
           <span class="arrow" :class="{ rotated: openSubmenus.Presupuesto }">›</span>
         </div>
         <ul class="submenu" v-show="openSubmenus.Presupuesto">
-          <li><router-link to="/clasificadores/PresupuestoView">presupuesto</router-link></li>
+          <li><router-link to="/clasificadores/PresupuestoView">Presupuesto</router-link></li>
           <li><router-link to="/presupuesto/ejecucion">Ejecución de Presupuesto</router-link></li>
         </ul>
       </li>
@@ -57,6 +57,8 @@
           <li><router-link to="/informes/libro_mayor">Libro Mayor</router-link></li>
           <li><router-link to="/informes/libro_diario">Libro Diario</router-link></li>
           <li><router-link to="/informes/balance_general">Balance General</router-link></li>
+          <li><router-link to="/informes/estado_resultados">Estado de Resultados</router-link></li>
+          <li><router-link to="/informes/balance_comprobacion">Balance de Comprobación</router-link></li>
         </ul>
       </li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
@@ -103,6 +105,17 @@ const logout = async() => {
   height: 100vh;
   background: linear-gradient(180deg, #0f1355, #000000);
   padding-top: 30px;
+  overflow-y: auto; 
+  scrollbar-width: thin; 
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3); 
+  border-radius: 4px;
 }
 
 

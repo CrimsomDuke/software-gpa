@@ -1,114 +1,90 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue';
 
+
+// Variables reactivas
+const libroMayor = ref([]);
+const loading = ref(false);
+const error = ref(null);
+const cuentaSeleccionada = ref(1); // ID de cuenta
+
+
+// Obtener datos del libro mayor desde el backend
+const fetchLibroMayor = async () => {
+  loading.value = true;
+  error.value = null;
+  try {
+    const response = await fetch('http://localhost:3000/informe/libro_mayor?cuenta_id=1&periodo_fiscal_id=1');
+
+    if (!response.ok) {
+      throw new Error('No se pudo obtener el informe.');
+    }
+    const data = await response.json();
+    libroMayor.value = data;
+  } catch (err) {
+    error.value = err.message || 'Error al obtener el informe.';
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchLibroMayor);
 </script>
 
 <template>
   <div class="d-flex">
     <NavBar />
     <div class="container p-3 m-3">
-      <div>
-        <h2>Libro Mayor</h2>
-        <div class="card">
-          <div class="card-header gradient-blue text-white">
-            <div class="row align-items-center">
-              <div class="col-md-6">
-                <h4 class="mb-0 text-white">Cuenta: 1.1.1.1 - Caja General</h4>
-              </div>
-              <div class="col-md-6 text-end">
-                <span class="badge bg-light text-dark fs-6">
-                  Saldo actual: $3,250.00
-                </span>
-              </div>
+      <h2>Libro Mayor</h2>
+      <div class="card">
+        <div class="card-header gradient-blue text-white">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h4 class="mb-0 text-white">Cuenta ID: {{ cuentaSeleccionada }}</h4>
+            </div>
+            <div class="col-md-6 text-end">
+              <span class="badge bg-light text-dark fs-6">
+                Saldo actual: ${{ libroMayor.length ? libroMayor[libroMayor.length - 1].saldo : '0.00' }}
+              </span>
             </div>
           </div>
-          <div class="card-body">
-            <!-- Account Summary -->
-            <div class="row mb-4">
-              <div class="col-md-4">
-                <div class="card bg-light">
-                  <div class="card-body py-2">
-                    <small class="text-muted">Saldo anterior</small>
-                    <h5 class="mb-0">$2,000.00</h5>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card bg-light">
-                  <div class="card-body py-2">
-                    <small class="text-muted">Total débitos</small>
-                    <h5 class="mb-0 text-success">$1,500.00</h5>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card bg-light">
-                  <div class="card-body py-2">
-                    <small class="text-muted">Total créditos</small>
-                    <h5 class="mb-0 text-danger">$250.00</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
+        </div>
 
-            <!-- Ledger Entries -->
-            <table class="table table-bordered table-hover">
-              <thead class="gradient-blue text-white">
-                <tr>
-                  <th class="text-center">Fecha</th>
-                  <th class="text-center">Referencia</th>
-                  <th class="text-center">Descripción</th>
-                  <th class="text-center">Debe</th>
-                  <th class="text-center">Haber</th>
-                  <th class="text-center">Saldo</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Opening Balance -->
-                <tr class="table-light">
-                  <td class="text-center">01/06/2023</td>
-                  <td class="text-center">-</td>
-                  <td>Saldo inicial</td>
-                  <td class="text-end"></td>
-                  <td class="text-end"></td>
-                  <td class="text-end fw-bold">$2,000.00</td>
-                </tr>
-
-                <!-- Transaction 1 -->
-                <tr>
-                  <td class="text-center">15/06/2023</td>
-                  <td class="text-center">TXN-001</td>
-                  <td>Venta a cliente XYZ</td>
-                  <td class="text-end text-success">$1,500.00</td>
-                  <td class="text-end"></td>
-                  <td class="text-end fw-bold">$3,500.00</td>
-                </tr>
-
-                <!-- Transaction 2 -->
-                <tr>
-                  <td class="text-center">16/06/2023</td>
-                  <td class="text-center">TXN-002</td>
-                  <td>Pago a proveedor ABC</td>
-                  <td class="text-end"></td>
-                  <td class="text-end text-danger">$250.00</td>
-                  <td class="text-end fw-bold">$3,250.00</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <!-- Account Selector -->
-            <div class="mt-4">
-              <label class="form-label">Ver otra cuenta:</label>
-              <select class="form-select">
-                <option>1 - Activos</option>
-                <option selected>1.1.1.1 - Caja General</option>
-                <option>1.1.1.2 - Banco Principal</option>
-                <option>1.1.2 - Cuentas por Cobrar</option>
-                <option>2 - Pasivos</option>
-                <option>3 - Patrimonio</option>
-              </select>
-            </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Seleccionar cuenta:</label>
+            <select class="form-select" v-model="cuentaSeleccionada" @change="fetchLibroMayor">
+              <option value="1">1.1.1.1 - Caja General</option>
+              <option value="2">1.1.1.2 - Banco Principal</option>
+            </select>
           </div>
+
+          <div v-if="loading" class="alert alert-info">Cargando datos...</div>
+          <div v-if="error" class="alert alert-danger">{{ error }}</div>
+
+          <table v-if="!loading && !error" class="table table-striped">
+            <thead class="gradient-blue text-white">
+              <tr>
+                <th class="text-center">Fecha</th>
+                <th class="text-center">Referencia</th>
+                <th>Descripción</th>
+                <th class="text-end">Debe</th>
+                <th class="text-end">Haber</th>
+                <th class="text-end">Saldo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in libroMayor" :key="item.referencia + item.fecha">
+                <td class="text-center">{{ new Date(item.fecha).toLocaleDateString() }}</td>
+                <td class="text-center">{{ item.referencia }}</td>
+                <td>{{ item.descripcion_transaccion }}</td>
+                <td class="text-end text-success">{{ item.debito }}</td>
+                <td class="text-end text-danger">{{ item.credito }}</td>
+                <td class="text-end fw-bold">{{ item.saldo }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
