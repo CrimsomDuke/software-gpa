@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exportación</title>
+</head>
+<body>
+  <h1>Listado de datos</h1>
+  <table border="1">
+    <thead>
+      <tr>
+        <% Object.keys(data[0]).forEach(key => { %>
+          <th><%= key %></th>
+        <% }); %>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(item => { %>
+        <tr>
+          <% Object.values(item).forEach(value => { %>
+            <td><%= value %></td>
+          <% }); %>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

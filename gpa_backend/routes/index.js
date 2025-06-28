@@ -14,4 +14,5 @@ module.exports = (app) => {
     require('./objeto_gasto.routes')(app);
     require('./ejecucion_presupuesto.routes')(app);
     require('./informes.routes')(app);
+    require('./export.routes')(app); 
 }
