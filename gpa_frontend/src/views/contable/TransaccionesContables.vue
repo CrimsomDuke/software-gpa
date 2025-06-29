@@ -79,7 +79,7 @@ onMounted(() => {
                     <td>{{ t.fecha }}</td>
                   </tr>
                   <tr v-if="transacciones.length === 0">
-                    <td colspan="7" class="text-center text-muted">No hay transacciones registradas</td>
+                    <td colspan="7" class="text-center text-muted">No hay transacciones registradas.</td>
                   </tr>
                 </tbody>
               </table>
