@@ -46,6 +46,7 @@
           <li><router-link to="/contable/transacciones">Transacciones</router-link></li>
           <li><router-link to="/contable/transacciones/nueva">Nueva Transacción</router-link></li>
           <li><router-link to="/contable/periodos_fiscales">Periodos Fiscales</router-link></li>
+          <li><router-link to="/informes/exportar">Exportar Transacciones</router-link></li>
         </ul>
       </li>
       <li>

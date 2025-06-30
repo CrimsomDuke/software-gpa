@@ -35,6 +35,7 @@ import BalanceComprobacionView from "@/views/informes/BalanceComprobacionView.vu
 import EstadoResultadosView from "@/views/informes/EstadoResultadosView.vue";
 import PeriodosFiscales from "@/views/contable/PeriodosFiscales.vue";
 import TransaccionesContables from "@/views/contable/TransaccionesContables.vue";
+import ExportarView from "@/views/informes/ExportarView.vue";
 
 // Presupuesto
 import EjecucionPresupuestoView from "@/views/clasificadores/Presupuesto/EjecucionPresupuestoView.vue";
@@ -87,6 +88,7 @@ const routes = [
     { path: '/informes/balance_general', name:'BalanceGeneral', component: BalanceGeneralView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     {path: '/informes/balance_comprobacion', name: 'BalanceComprobacion', component: BalanceComprobacionView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     {path: '/informes/estado_resultados', name: 'EstadoResultados', component: EstadoResultadosView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    {path: '/informes/exportar', name: 'Exportar', component: ExportarView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },

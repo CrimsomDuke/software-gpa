@@ -9,7 +9,7 @@ exports.exportData = async (req, res) => {
     let filePath;
     const fileName = `export_${Date.now()}`;
 
-    if (format === 'excel') {
+    if (format === 'xlsx') {
       filePath = await exportToExcel(data, fileName);
     } else if (format === 'pdf') {
       filePath = await exportToPDF(data, fileName); 
