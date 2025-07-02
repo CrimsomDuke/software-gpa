@@ -1,7 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,watch} from 'vue';
 import NavBar from '../components/NavBar.vue';
-
 
 // Variables reactivas
 const libroMayor = ref([]);
@@ -9,14 +8,13 @@ const loading = ref(false);
 const error = ref(null);
 const cuentaSeleccionada = ref(1); // ID de cuenta
 
-
 // Obtener datos del libro mayor desde el backend
 const fetchLibroMayor = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch('http://localhost:3000/informe/libro_mayor?cuenta_id=1&periodo_fiscal_id=1');
-
+    // Usa el ID de cuenta seleccionado dinámicamente
+    const response = await fetch(`http://localhost:3000/informe/libro_mayor?cuenta_id=${cuentaSeleccionada.value}&periodo_fiscal_id=1`);
     if (!response.ok) {
       throw new Error('No se pudo obtener el informe.');
     }
@@ -29,7 +27,9 @@ const fetchLibroMayor = async () => {
   }
 };
 
+// Llama a fetchLibroMayor cuando cambia la cuenta seleccionada
 onMounted(fetchLibroMayor);
+watch(cuentaSeleccionada, fetchLibroMayor);
 </script>
 
 <template>

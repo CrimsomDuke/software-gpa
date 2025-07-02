@@ -46,6 +46,7 @@
           <li><router-link to="/contable/transacciones">Transacciones</router-link></li>
           <li><router-link to="/contable/transacciones/nueva">Nueva Transacción</router-link></li>
           <li><router-link to="/contable/periodos_fiscales">Periodos Fiscales</router-link></li>
+          <li><router-link to="/contable/traspaso-saldos">Traspaso de Saldos</router-link></li>
           <li><router-link to="/informes/exportar">Exportar Transacciones</router-link></li>
         </ul>
       </li>
@@ -106,16 +107,16 @@ const logout = async() => {
   height: 100vh;
   background: linear-gradient(180deg, #0f1355, #000000);
   padding-top: 30px;
-  overflow-y: auto; 
-  scrollbar-width: thin; 
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .sidebar::-webkit-scrollbar {
-  width: 8px; 
+  width: 8px;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3); 
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 4px;
 }
 

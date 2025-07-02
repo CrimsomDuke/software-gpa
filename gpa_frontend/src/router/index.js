@@ -35,6 +35,7 @@ import BalanceComprobacionView from "@/views/informes/BalanceComprobacionView.vu
 import EstadoResultadosView from "@/views/informes/EstadoResultadosView.vue";
 import PeriodosFiscales from "@/views/contable/PeriodosFiscales.vue";
 import TransaccionesContables from "@/views/contable/TransaccionesContables.vue";
+import TraspasoSaldos from "@/views/contable/TraspasoSaldos.vue";
 import ExportarView from "@/views/informes/ExportarView.vue";
 
 // Presupuesto
@@ -70,7 +71,7 @@ const routes = [
     { path: '/clasificadores/objetos_gasto', name: 'ObjetosGasto', component: ObjetoDeGastosView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
     { path: '/clasificadores/objetos_gasto/form', name : 'ObjetoGastoFormCreate', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
     { path: '/clasificadores/objetos_gasto/form/:id', name : 'ObjetoGastoFormEdit', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
-    
+
     // Presupuesto
     { path: '/presupuesto/ejecucion', name: 'EjecucionPresupuesto', component: EjecucionPresupuestoView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     { path: '/clasificadores/PresupuestoView', name: 'PresupuestoView', component: PresupuestoView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
@@ -78,6 +79,8 @@ const routes = [
     //CONTABLE
     { path: '/contable/periodos_fiscales', name: 'PeriodosFiscales', component: PeriodosFiscales, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     { path: '/contable/transacciones', name: 'TransaccionesContables', component: TransaccionesContables, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    { path: '/contable/traspaso-saldos', name: 'TraspasoSaldos', component: TraspasoSaldos, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+
 
     //PLAN DE CUENTAS
     { path: '/plan_cuentas/cuentas', name: 'Cuentas', component: ListaCuentasView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
