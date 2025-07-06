@@ -14,4 +14,6 @@ SELECT * FROM "Cuenta" c;
 SELECT * FROM "Transaccions" t;
 SELECT * FROM "DetalleTransaccions" dt;
 
+SELECT transaccion_id, sum(debito), sum(credito) FROM "DetalleTransaccions" dt 
+
 SELECT * FROM "Roles"

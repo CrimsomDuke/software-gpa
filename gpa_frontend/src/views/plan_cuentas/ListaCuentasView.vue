@@ -1,9 +1,44 @@
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import NavBar from '../components/NavBar.vue';
+import global_vars from '@/config/global_vars';
+
+const errorMessage = ref(null);
+
+const cuentas = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await fetch(`${global_vars.api_url}/cuenta`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      cuentas.value = data;
+    } else {
+      errorMessage.value = 'Error al cargar las cuentas: ' + (data.message || 'Desconocido');
+    }
+    
+  } catch (error) {
+    errorMessage.value = 'Error al cargar las cuentas';
+    console.error(error);
+  }
+});
+
+</script>
+
 <template>
   <div class="d-flex">
     <NavBar />
     <div class="container p-3 m-3">
       <div>
         <h2>Catálogo de Cuentas Contables</h2>
+        <router-link to="/plan_cuentas/cuentas/form" class="btn btn-primary m-2"> + Crear cuenta</router-link>
         <div class="card">
           <h3 v-if="errorMessage">{{ errorMessage }}</h3>
           <table class="table table-striped table-bordered table-hover">
@@ -14,27 +49,28 @@
                 <th class="gradient-blue text-white">Descripción</th>
                 <th class="gradient-blue text-white">Tipo</th>
                 <th class="gradient-blue text-white">Nivel</th>
+                <th class="gradient-blue text-white">Cuenta Padre</th>
+                <th class="gradient-blue text-white">Objeto Gasto</th>      
                 <th class="gradient-blue text-white">Estado</th>
                 <th class="gradient-blue text-white">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="account in accounts" :key="account.id">
-                <td class="text-center">{{ account.codigo }}</td>
-                <td class="text-center" :style="{ 'padding-left': `${(account.nivel_cuenta_id - 1) * 15}px` }">
-                  <span v-if="account.nivel_cuenta_id > 1" class="me-1">↳</span>
-                  {{ account.nombre }}
-                </td>
-                <td class="text-center">{{ account.descripcion || '-' }}</td>
-                <td class="text-center">{{ getAccountType(account.tipo_cuenta_id) }}</td>
-                <td class="text-center">{{ getAccountLevel(account.nivel_cuenta_id) }}</td>
+              <tr v-for="cuenta in cuentas" :key="cuenta.id">
+                <td class="text-center">{{ cuenta.codigo }}</td>
+                <td class="text-center">{{ cuenta.nombre }}</td>
+                <td class="text-center">{{ cuenta.descripcion }}</td>
+                <td class="text-center">{{ cuenta.tipo_cuenta ? cuenta.tipo_cuenta.nombre : '-N/A-' }}</td>
+                <td class="text-center">{{ cuenta.nivel_cuenta ? cuenta.nivel_cuenta.nombre : '-N/A-' }}</td>
+                <td class="text-center">{{ cuenta.padre ? cuenta.padre.nombre : '-N/A-' }}</td>
+                <td class="text-center">{{ cuenta.objeto_gasto ? cuenta.objeto_gasto.nombre : '-N/A-' }}</td>
                 <td class="text-center">
-                  <span class="badge" :class="account.esta_activa ? 'bg-success' : 'bg-secondary'">
-                    {{ account.esta_activa ? 'Activa' : 'Inactiva' }}
+                  <span class="badge" :class="cuenta.esta_activa ? 'bg-success' : 'bg-secondary'">
+                    {{ cuenta.esta_activa ? 'Activa' : 'Inactiva' }}
                   </span>
                 </td>
                 <td class="text-center">
-                  <router-link 
+                  <router-link :to="{ name: 'CuentasFormEdit', params: { id: cuenta.id } }"
                     class="btn btn-primary me-2"
                   >
                     Editar
@@ -48,89 +84,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import NavBar from '../components/NavBar.vue';
-
-// Mock data - replace with real API calls later
-const accounts = ref([
-  {
-    id: 1,
-    codigo: '1',
-    nombre: 'Activos',
-    descripcion: 'Todos los activos de la empresa',
-    esta_activa: true,
-    tipo_cuenta_id: 1,
-    nivel_cuenta_id: 1,
-    cuenta_padre_id: null
-  },
-  {
-    id: 2,
-    codigo: '1.1',
-    nombre: 'Activos Corrientes',
-    descripcion: 'Activos líquidos a corto plazo',
-    esta_activa: true,
-    tipo_cuenta_id: 1,
-    nivel_cuenta_id: 2,
-    cuenta_padre_id: 1
-  },
-  {
-    id: 3,
-    codigo: '1.1.1',
-    nombre: 'Efectivo y Equivalentes',
-    descripcion: 'Dinero en caja y bancos',
-    esta_activa: true,
-    tipo_cuenta_id: 1,
-    nivel_cuenta_id: 3,
-    cuenta_padre_id: 2
-  },
-  {
-    id: 4,
-    codigo: '2',
-    nombre: 'Pasivos',
-    descripcion: 'Todas las obligaciones',
-    esta_activa: true,
-    tipo_cuenta_id: 2,
-    nivel_cuenta_id: 1,
-    cuenta_padre_id: null
-  }
-]);
-
-const accountTypes = [
-  { id: 1, nombre: 'Activo' },
-  { id: 2, nombre: 'Pasivo' },
-  { id: 3, nombre: 'Patrimonio' }
-];
-
-const accountLevels = [
-  { id: 1, nombre: 'Clase' },
-  { id: 2, nombre: 'Grupo' },
-  { id: 3, nombre: 'Cuenta' }
-];
-
-const errorMessage = ref(null);
-
-// Helper functions
-const getAccountType = (id) => {
-  return accountTypes.find(t => t.id === id)?.nombre || 'Desconocido';
-};
-
-const getAccountLevel = (id) => {
-  return accountLevels.find(l => l.id === id)?.nombre || 'Desconocido';
-};
-
-
-// This would be your API call in a real implementation
-/*
-onMounted(async () => {
-  try {
-    const response = await fetch('/api/accounts');
-    accounts.value = await response.json();
-  } catch (error) {
-    errorMessage.value = 'Error al cargar las cuentas';
-    console.error(error);
-  }
-});
-*/
-</script>

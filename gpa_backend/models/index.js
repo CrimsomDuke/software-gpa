@@ -157,6 +157,12 @@ ObjetoGasto.hasMany(Cuenta, {
     as: 'cuentas'
 });
 
+Cuenta.belongsTo(ObjetoGasto, {
+    foreignKey: 'objeto_gasto_id',
+    sourceKey: 'id',
+    as: 'objeto_gasto'
+});
+
 sequelizeInst.sync({
     alter : true
 }).then(() => {

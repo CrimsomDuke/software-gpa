@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="app-wrapper">
+  <div class="app-wrapper layout-container">
     <div class="content-wrapper">
       <main class="">
         <router-view />
@@ -34,6 +34,11 @@
   padding: 20px;
   padding-left: 240px;
   box-sizing: border-box;
+}
+
+.layout-container {
+  display: flex;
+  min-height: 100vh;
 }
 
 header {

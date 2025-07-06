@@ -104,11 +104,12 @@ const logout = async() => {
 <style scoped>
 .sidebar {
   width: 220px;
-  height: 100vh;
+  min-height: 100vh;       /* ✅ altura mínima de pantalla */
+  height: auto;            /* ✅ crecerá con el contenido */
+  position: relative;
   background: linear-gradient(180deg, #0f1355, #000000);
   padding-top: 30px;
   overflow-y: auto;
-  scrollbar-width: thin;
 }
 
 .sidebar::-webkit-scrollbar {

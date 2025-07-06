@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import NavBar from '../components/NavBar.vue'
+import NavBar from '../../components/NavBar.vue'
 
 const router = useRouter()
 
@@ -69,6 +69,7 @@ onMounted(() => {
                     <th>Tipo</th>
                     <th>Descripción</th>
                     <th>Fecha</th>
+                    <th>Ver Detalle</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -77,6 +78,11 @@ onMounted(() => {
                     <td>{{ t.tipo_transaccion }}</td>
                     <td>{{ t.descripcion }}</td>
                     <td>{{ t.fecha }}</td>
+                    <td>
+                      <router-link :to="{ name: 'DetallesTransaccion', params: { id: t.id } }" class="btn btn-primary">
+                        <i class="bi bi-eye"></i> Ver Detalle
+                      </router-link>
+                    </td>
                   </tr>
                   <tr v-if="transacciones.length === 0">
                     <td colspan="7" class="text-center text-muted">No hay transacciones registradas.</td>

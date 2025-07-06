@@ -9,7 +9,8 @@ exports.getAllCuentas = async (req, res) => {
           { model: db.TipoCuenta, as: 'tipo_cuenta' },
           { model: db.NivelCuenta, as: 'nivel_cuenta' },
           { model: db.Cuenta, as: 'padre' },
-          { model: db.Cuenta, as: 'subcuentas' }
+          { model: db.Cuenta, as: 'subcuentas' },
+          { model: db.ObjetoGasto, as: 'objeto_gasto' }
         ]
       });
       res.status(200).json(cuentas);
@@ -24,7 +25,7 @@ exports.getAllCuentas = async (req, res) => {
     const { id } = req.params;
     try {
       const cuenta = await db.Cuenta.findByPk(id, {
-        include: ['tipo_cuenta', 'nivel_cuenta', 'padre', 'subcuentas']
+        include: ['tipo_cuenta', 'nivel_cuenta', 'padre', 'subcuentas', 'objeto_gasto']
       });
       if (!cuenta) return res.status(404).json({ message: 'Cuenta no encontrada' });
       res.status(200).json(cuenta);
