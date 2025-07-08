@@ -616,6 +616,7 @@ const validateTransaccionDetalles = (detalles) => {
         return 'Debe proporcionar al menos un detalle de transacción';
     }
 
+    const cuentaUsadas = new Set();
     for (const [index, detalle] of detalles.entries()) {
         if (!detalle.cuenta_id) {
             return `El detalle en posición ${index + 1} no tiene cuenta_id`;
@@ -636,6 +637,11 @@ const validateTransaccionDetalles = (detalles) => {
             (hasCredito && parseFloat(detalle.credito) <= 0)) {
             return `El detalle en posición ${index + 1} debe tener valores positivos`;
         }
+
+        if (cuentaUsadas.has(detalle.cuenta_id)) {
+            return `La cuenta con ID ${detalle.cuenta_id} está repetida. Cada cuenta debe aparecer una sola vez por transacción.`;
+        }
+        cuentaUsadas.add(detalle.cuenta_id);
     }
 
     return null;

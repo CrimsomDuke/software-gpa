@@ -28,6 +28,41 @@ a,
   color: white;
 }
 
+.d-flex {
+  display: flex;
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.card {
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f4f4f4;
+}
+
+.gradient-blue {
+  background: linear-gradient(to right, #007bff, #0056b3);
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);

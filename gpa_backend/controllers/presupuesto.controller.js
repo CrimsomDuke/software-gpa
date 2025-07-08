@@ -30,6 +30,7 @@ exports.getAllPresupuestos = async (req, res) => {
             include: [
                 { model: db.CentroCosto, as: 'centro_costo' },
                 { model: db.ObjetoGasto, as: 'objeto_gasto' },
+                { model: db.PeriodoFiscal, as: 'periodo_fiscal' },
             ]
         });
 
