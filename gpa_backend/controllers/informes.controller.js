@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const db = require('../models/index.js');
 const AuditLogService = require('../services/audit_log.service.js');
+const { exportToExcel, exportToPDF, exportToHTML } = require('../utils/exportUtils');
 
 exports.libroDiario = async (req, res) => {
     const { periodo_fiscal_id, fecha_inicio, fecha_fin } = req.query;
@@ -70,7 +71,7 @@ exports.libroDiario = async (req, res) => {
 //   .then(data => console.log(data));
 
 exports.libroMayor = async (req, res) => {
-    const { cuenta_id, periodo_fiscal_id, fecha_inicio, fecha_fin } = req.query;
+    const { cuenta_id, periodo_fiscal_id, fecha_inicio, fecha_fin, formato } = req.query;
     try {
         if (!cuenta_id && !periodo_fiscal_id) {
             return res.status(400).json({ message: 'Debe proporcionar al menos cuenta_id o periodo_fiscal_id' });
@@ -102,42 +103,51 @@ exports.libroMayor = async (req, res) => {
                 [{ model: db.Transaccion, as: 'transaccion' }, 'fecha', 'ASC'],
                 ['id', 'ASC']
             ]
-        })
+        });
 
         if (!detalles || detalles.length === 0) {
             return res.status(404).json({ message: 'No se encontraron detalles para los filtros proporcionados' });
         }
 
         let saldo = 0;
-
         const libroMayor = detalles.map(det => {
             saldo += (det.debito || 0) - (det.credito || 0);
             return {
-                cuenta_id: det.cuenta_id,
-                codigo_cuenta: det.cuenta.codigo,
-                nombre_cuenta: det.cuenta.nombre,
                 fecha: det.transaccion.fecha,
                 referencia: det.transaccion.referencia,
-                descripcion_transaccion: det.transaccion.descripcion,
-                debito: det.debito,
-                credito: det.credito,
+                descripcion: det.transaccion.descripcion,
+                debe: det.debito,
+                haber: det.credito,
                 saldo: saldo
             };
         });
 
+        // Exportación según formato
+        if (formato === 'xlsx') {
+            const filePath = await exportToExcel(libroMayor, 'libro_mayor');
+            return res.download(filePath, 'libro_mayor.xlsx');
+        }
+        if (formato === 'pdf') {
+            const filePath = await exportToPDF(libroMayor, 'libro_mayor');
+            return res.download(filePath, 'libro_mayor.pdf');
+        }
+        if (formato === 'html') {
+            const filePath = await exportToHTML(libroMayor, 'libro_mayor');
+            return res.download(filePath, 'libro_mayor.html');
+        }
+
+        // Por defecto, responde en JSON
         return res.status(200).json(libroMayor);
     } catch (error) {
         console.error('Error generando libro mayor:', error);
         return res.status(500).json({ message: 'Error generando libro mayor' });
     }
-
 };
 
 exports.balanceGeneral = async (req, res) => {
-    const { fecha_corte } = req.query;
+    const { fecha_corte, formato } = req.query;
 
     try {
-
         if (!fecha_corte) {
             return res.status(400).json({ message: 'Debe proporcionar una fecha de corte' });
         }
@@ -170,29 +180,35 @@ exports.balanceGeneral = async (req, res) => {
             return res.status(404).json({ message: 'No se encontraron cuentas activas para la fecha de corte proporcionada' });
         }
 
-        const balance = { activos: 0, pasivos: 0, patrimonio: 0, detalles: [] };
-
-        cuentas.forEach(cuenta => {
+        // Solo las columnas requeridas
+        const balance = cuentas.map(cuenta => {
             const saldo = cuenta.detalles.reduce((acc, detalle) => {
                 return acc + (detalle.debito || 0) - (detalle.credito || 0);
             }, 0);
 
-            balance.detalles.push({
-                tipo_cuenta: cuenta.tipo_cuenta.nombre,
-                codigo_cuenta: cuenta.codigo,
-                nombre_cuenta: cuenta.nombre,
+            return {
+                tipo: cuenta.tipo_cuenta.nombre,
+                codigo: cuenta.codigo,
+                nombre: cuenta.nombre,
                 saldo
-            });
-
-            if (cuenta.tipo_cuenta.nombre === 'activo') {
-                balance.activos += saldo;
-            } else if (cuenta.tipo_cuenta.nombre === 'pasivo') {
-                balance.pasivos += saldo;
-            } else if (cuenta.tipo_cuenta.nombre === 'capital') {
-                balance.patrimonio += saldo;
-            }
+            };
         });
 
+        // Exportación según formato
+        if (formato === 'xlsx') {
+            const filePath = await exportToExcel(balance, 'balance_general');
+            return res.download(filePath, 'balance_general.xlsx');
+        }
+        if (formato === 'pdf') {
+            const filePath = await exportToPDF(balance, 'balance_general');
+            return res.download(filePath, 'balance_general.pdf');
+        }
+        if (formato === 'html') {
+            const filePath = await exportToHTML(balance, 'balance_general');
+            return res.download(filePath, 'balance_general.html');
+        }
+
+        // Por defecto, responde en JSON
         return res.status(200).json(balance);
     } catch (error) {
         console.error('Error generando balance general:', error);

@@ -54,6 +54,10 @@ exports.registerUser = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: 'Usuario ya existe' });
         }
+        const verifyEmail = await db.User.findOne({ where: { email : email } });
+        if (verifyEmail) {
+            return res.status(400).json({ message: 'Email ya existe' });
+        }
 
         const role = await db.Role.findByPk(role_id);
         if (!role) {
