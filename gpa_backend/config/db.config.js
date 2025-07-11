@@ -5,7 +5,7 @@ const sequelizeInst = new Sequelize({
     dialect : 'postgres',
     database : 'gpa-db',
     username : 'postgres',
-    password : '15052003',
+    password : 'root',
     host : 'localhost',
     port : 5432
 })
