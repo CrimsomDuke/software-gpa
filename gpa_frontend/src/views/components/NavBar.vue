@@ -61,6 +61,7 @@
           <li><router-link to="/informes/balance_general">Balance General</router-link></li>
           <li><router-link to="/informes/estado_resultados">Estado de Resultados</router-link></li>
           <li><router-link to="/informes/balance_comprobacion">Balance de Comprobación</router-link></li>
+          <li><router-link to="/informes/saldos-entre-periodos">Saldos entre Periodos</router-link></li>
         </ul>
       </li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>

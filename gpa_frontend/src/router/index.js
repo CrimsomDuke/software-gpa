@@ -37,6 +37,7 @@ import PeriodosFiscales from "@/views/contable/PeriodosFiscales.vue";
 import TransaccionesContables from "@/views/contable/transacciones/TransaccionesContables.vue";
 import TraspasoSaldos from "@/views/contable/TraspasoSaldos.vue";
 import ExportarView from "@/views/informes/ExportarView.vue";
+import SaldoEntrePeriodosView from "@/views/informes/SaldoEntrePeriodosView.vue";
 
 // Presupuesto
 import EjecucionPresupuestoView from "@/views/clasificadores/Presupuesto/EjecucionPresupuestoView.vue";
@@ -94,6 +95,7 @@ const routes = [
     {path: '/informes/balance_comprobacion', name: 'BalanceComprobacion', component: BalanceComprobacionView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     {path: '/informes/estado_resultados', name: 'EstadoResultados', component: EstadoResultadosView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
     {path: '/informes/exportar', name: 'Exportar', component: ExportarView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
+    {path: '/informes/saldos-entre-periodos', name: 'SaldoEntrePeriodos',component: SaldoEntrePeriodosView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },
 
     //auth routes
     { path: '/login', name: 'Login', component : LoginView },
