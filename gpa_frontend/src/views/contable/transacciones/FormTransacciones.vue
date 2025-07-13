@@ -1,6 +1,6 @@
 <script setup>
 import global_vars from '@/config/global_vars';
-import NavBar from '../components/NavBar.vue';
+import NavBar from '../../components/NavBar.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 

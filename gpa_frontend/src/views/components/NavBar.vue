@@ -13,6 +13,7 @@
           <li><router-link to="/clasificadores/tipos_cuenta">Tipos de cuenta</router-link></li>
           <li><router-link to="/clasificadores/centros_costo">Centros de Costo</router-link></li>
           <li><router-link to="/clasificadores/objetos_gasto">Objetos de Gasto</router-link></li>
+          <li><router-link to="/clasificadores/movimientosPorCuenta">Movimientos por Cuenta</router-link></li>
         </ul>
       </li>
       <li>

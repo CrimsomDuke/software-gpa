@@ -48,6 +48,7 @@ import ObjetoDeGastoForm from "@/views/clasificadores/ObjetoDeGastos/ObjetoDeGas
 import RolForm from "@/views/seguridad/RolForm.vue";
 import CuentaFormView from "@/views/plan_cuentas/CuentaFormView.vue";
 import DetallesTransaccionView from "@/views/contable/transacciones/DetallesTransaccionView.vue";
+import movimientosPorCuentaView from "@/views/clasificadores/movimientosPorCuenta/movimientosPorCuentaView.vue";
 
 const routes = [
     // Require login
@@ -74,6 +75,7 @@ const routes = [
     { path: '/clasificadores/objetos_gasto', name: 'ObjetosGasto', component: ObjetoDeGastosView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
     { path: '/clasificadores/objetos_gasto/form', name : 'ObjetoGastoFormCreate', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
     { path: '/clasificadores/objetos_gasto/form/:id', name : 'ObjetoGastoFormEdit', component: ObjetoDeGastoForm, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
+    {path: '/clasificadores/movimientosPorCuenta', name: 'MovimientosPorCuenta', component: movimientosPorCuentaView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 5 } },
 
     // Presupuesto
     { path: '/presupuesto/ejecucion', name: 'EjecucionPresupuesto', component: EjecucionPresupuestoView, beforeEnter: Guards.IsAuthorizedRoleGuard, meta : { requiredRoleLevel : 1 } },

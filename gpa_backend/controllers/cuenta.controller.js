@@ -127,3 +127,36 @@ exports.getAllCuentas = async (req, res) => {
       res.status(500).json({ message: 'Error interno al eliminar cuenta' });
     }
   };
+
+
+  exports.getMovimientosPorCuenta = async (req, res) => {
+    const { cuenta_id } = req.params;
+
+    if (!cuenta_id) {
+        return res.status(400).json({ message: 'El parámetro cuenta_id es obligatorio' });
+    }
+
+    try {
+        const movimientos = await db.DetalleTransaccion.findAll({
+            where: { cuenta_id },
+            include: [
+                {
+                    model: db.Transaccion,
+                    as: 'transaccion', // Asegúrate de tener la relación definida
+                    attributes: ['id', 'fecha', 'descripcion']
+                },
+                {
+                    model: db.Cuenta,
+                    as: 'cuenta',
+                    attributes: ['id', 'codigo', 'nombre']
+                }
+            ],
+            order: [['id', 'ASC']]
+        });
+
+        res.status(200).json(movimientos);
+    } catch (error) {
+        console.error('Error al obtener movimientos por cuenta:', error);
+        res.status(500).json({ message: 'Error interno al obtener movimientos por cuenta' });
+    }
+};

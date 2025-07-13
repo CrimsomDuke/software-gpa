@@ -6,4 +6,6 @@ module.exports = (app) => {
     app.post('/cuenta/create', controller.createCuenta);
     app.put('/cuenta/update/:id', controller.updateCuenta);
     app.delete('/cuenta/delete/:id', controller.deleteCuenta);
+    app.get('/cuentas/:cuenta_id/movimientos', controller.getMovimientosPorCuenta);
+
 };
