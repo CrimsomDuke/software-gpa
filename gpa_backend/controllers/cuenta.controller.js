@@ -9,7 +9,8 @@ exports.getAllCuentas = async (req, res) => {
           { model: db.TipoCuenta, as: 'tipo_cuenta' },
           { model: db.NivelCuenta, as: 'nivel_cuenta' },
           { model: db.Cuenta, as: 'padre' },
-          { model: db.Cuenta, as: 'subcuentas' }
+          { model: db.Cuenta, as: 'subcuentas' },
+          { model: db.ObjetoGasto, as: 'objeto_gasto' }
         ]
       });
       res.status(200).json(cuentas);
@@ -24,7 +25,7 @@ exports.getAllCuentas = async (req, res) => {
     const { id } = req.params;
     try {
       const cuenta = await db.Cuenta.findByPk(id, {
-        include: ['tipo_cuenta', 'nivel_cuenta', 'padre', 'subcuentas']
+        include: ['tipo_cuenta', 'nivel_cuenta', 'padre', 'subcuentas', 'objeto_gasto']
       });
       if (!cuenta) return res.status(404).json({ message: 'Cuenta no encontrada' });
       res.status(200).json(cuenta);
@@ -126,6 +127,7 @@ exports.getAllCuentas = async (req, res) => {
       res.status(500).json({ message: 'Error interno al eliminar cuenta' });
     }
   };
+<<<<<<< HEAD
   
   // Obtener cuentas por tipo
 exports.getCuentasByTipo = async (req, res) => {
@@ -193,3 +195,38 @@ exports.getCuentasActivas = async (req, res) => {
     res.status(500).json({ message: 'Error interno al obtener cuentas activas' });
   }
 };
+=======
+
+
+  exports.getMovimientosPorCuenta = async (req, res) => {
+    const { cuenta_id } = req.params;
+
+    if (!cuenta_id) {
+        return res.status(400).json({ message: 'El parámetro cuenta_id es obligatorio' });
+    }
+
+    try {
+        const movimientos = await db.DetalleTransaccion.findAll({
+            where: { cuenta_id },
+            include: [
+                {
+                    model: db.Transaccion,
+                    as: 'transaccion', // Asegúrate de tener la relación definida
+                    attributes: ['id', 'fecha', 'descripcion']
+                },
+                {
+                    model: db.Cuenta,
+                    as: 'cuenta',
+                    attributes: ['id', 'codigo', 'nombre']
+                }
+            ],
+            order: [['id', 'ASC']]
+        });
+
+        res.status(200).json(movimientos);
+    } catch (error) {
+        console.error('Error al obtener movimientos por cuenta:', error);
+        res.status(500).json({ message: 'Error interno al obtener movimientos por cuenta' });
+    }
+};
+>>>>>>> b02b8fbf92b88f4647f9da04dcf19baa1f4e1d11

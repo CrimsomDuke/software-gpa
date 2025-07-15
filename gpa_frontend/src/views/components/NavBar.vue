@@ -13,6 +13,7 @@
           <li><router-link to="/clasificadores/tipos_cuenta">Tipos de cuenta</router-link></li>
           <li><router-link to="/clasificadores/centros_costo">Centros de Costo</router-link></li>
           <li><router-link to="/clasificadores/objetos_gasto">Objetos de Gasto</router-link></li>
+          <li><router-link to="/clasificadores/movimientosPorCuenta">Movimientos por Cuenta</router-link></li>
         </ul>
       </li>
       <li>
@@ -61,6 +62,7 @@
           <li><router-link to="/informes/balance_general">Balance General</router-link></li>
           <li><router-link to="/informes/estado_resultados">Estado de Resultados</router-link></li>
           <li><router-link to="/informes/balance_comprobacion">Balance de Comprobación</router-link></li>
+          <li><router-link to="/informes/saldos-entre-periodos">Saldos entre Periodos</router-link></li>
         </ul>
       </li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>
@@ -104,11 +106,12 @@ const logout = async() => {
 <style scoped>
 .sidebar {
   width: 220px;
-  height: 100vh;
+  min-height: 100vh;       /* ✅ altura mínima de pantalla */
+  height: auto;            /* ✅ crecerá con el contenido */
+  position: relative;
   background: linear-gradient(180deg, #0f1355, #000000);
   padding-top: 30px;
   overflow-y: auto;
-  scrollbar-width: thin;
 }
 
 .sidebar::-webkit-scrollbar {

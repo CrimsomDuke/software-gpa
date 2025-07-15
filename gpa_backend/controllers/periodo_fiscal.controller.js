@@ -234,3 +234,84 @@ const validatePeriodoFiscalFields = (req) => {
 
     return errors;
 }
+
+exports.getSaldosEntrePeriodos = async (req, res) => {
+    const { actualId } = req.params;
+    const { anteriorId } = req.query;
+
+    if (!anteriorId) {
+        return res.status(400).json({ success: false, message: 'Debe enviar el ID del periodo anterior' });
+    }
+
+    try {
+        const anterior = await db.DetalleTransaccion.findAll({
+            include: {
+                model: db.Transaccion,
+                as: 'transaccion',
+                where: { periodo_fiscal_id: anteriorId },
+                attributes: []
+            },
+            attributes: [
+                'cuenta_id',
+                [db.Sequelize.fn('SUM', db.Sequelize.literal('debito - credito')), 'saldo_anterior']
+            ],
+            group: ['cuenta_id']
+        });
+
+        const actual = await db.DetalleTransaccion.findAll({
+            include: {
+                model: db.Transaccion,
+                as: 'transaccion',
+                where: { periodo_fiscal_id: actualId },
+                attributes: []
+            },
+            attributes: [
+                'cuenta_id',
+                [db.Sequelize.fn('SUM', db.Sequelize.literal('debito - credito')), 'saldo_actual']
+            ],
+            group: ['cuenta_id']
+        });
+
+
+        const saldos = {};
+
+        anterior.forEach(a => {
+            saldos[a.cuenta_id] = {
+                cuenta_id: a.cuenta_id,
+                saldo_anterior: parseFloat(a.get('saldo_anterior')) || 0,
+                saldo_actual: 0,
+            };
+        });
+
+        actual.forEach(a => {
+            if (!saldos[a.cuenta_id]) {
+                saldos[a.cuenta_id] = {
+                    cuenta_id: a.cuenta_id,
+                    saldo_anterior: 0,
+                    saldo_actual: parseFloat(a.get('saldo_actual')) || 0,
+                };
+            } else {
+                saldos[a.cuenta_id].saldo_actual = parseFloat(a.get('saldo_actual')) || 0;
+            }
+        });
+
+        const cuentas = await db.Cuenta.findAll({ attributes: ['id', 'codigo', 'nombre'] });
+        const cuentasMap = {};
+        cuentas.forEach(c => cuentasMap[c.id] = c);
+
+        const resultado = Object.values(saldos).map(s => ({
+            cuenta_id: s.cuenta_id,
+            codigo: cuentasMap[s.cuenta_id]?.codigo,
+            nombre: cuentasMap[s.cuenta_id]?.nombre,
+            saldo_anterior: s.saldo_anterior,
+            saldo_actual: s.saldo_actual,
+            saldo_total: s.saldo_anterior + s.saldo_actual
+        }));
+
+        return res.status(200).json({ success: true, data: resultado });
+
+    } catch (error) {
+        console.error('Error al calcular saldos:', error);
+        return res.status(500).json({ success: false, message: 'Error interno al calcular saldos' });
+    }
+};

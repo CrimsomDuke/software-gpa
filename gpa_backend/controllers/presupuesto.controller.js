@@ -30,6 +30,7 @@ exports.getAllPresupuestos = async (req, res) => {
             include: [
                 { model: db.CentroCosto, as: 'centro_costo' },
                 { model: db.ObjetoGasto, as: 'objeto_gasto' },
+                { model: db.PeriodoFiscal, as: 'periodo_fiscal' },
             ]
         });
 
@@ -62,18 +63,30 @@ exports.createPresupuesto = async (req, res) => {
             return res.status(404).json({ message: 'El Objeto de Gasto no existe' });
         }
 
+        // Incluye cuenta_id al crear el presupuesto
         const presupuesto = await db.Presupuesto.create({
             monto_inicial,
             periodo_fiscal_id,
             centro_costo_id,
             objeto_gasto_id,
+            cuenta_id, // <-- asegúrate de guardar el id de cuenta
             creado_por: user_id,
             esta_activo: true
         });
 
         AuditLogService.createAuditLog('CREATE', user_id, 'Presupuesto', presupuesto.id);
 
-        return res.status(201).json(presupuesto);
+        // Busca el presupuesto recién creado con los includes
+        const presupuestoCompleto = await db.Presupuesto.findByPk(presupuesto.id, {
+            include: [
+                { model: db.CentroCosto, as: 'centro_costo' },
+                { model: db.ObjetoGasto, as: 'objeto_gasto' },
+                { model: db.Cuenta, as: 'cuenta' }, // Incluye la relación cuenta si existe
+                { model: db.PeriodoFiscal, as: 'periodo_fiscal' }
+            ]
+        });
+
+        return res.status(201).json(presupuestoCompleto);
     } catch (error) {
         console.error('Error creating Presupuesto:', error);
         return res.status(500).json({ message: 'Error creando el presupuesto' });
