@@ -60,7 +60,7 @@ exports.createTransaccion = async (req, res) => {
 
         if (totalDebito !== totalCredito) {
             return res.status(400).json({
-                message: 'La suma de los débitos y créditos no es igual',
+                errors: 'Los débitos y créditos deben estar balanceados',
                 details: {
                     totalDebito,
                     totalCredito
@@ -135,7 +135,7 @@ exports.updateTransaccion = async (req, res) => {
         if (periodo_fiscal_id) transaccion.periodo_fiscal_id = periodo_fiscal_id;
         if (usuario_id) transaccion.usuario_id = usuario_id;
 
-        transaccion.save();
+        await transaccion.save();
         await auditLogService.createAuditLog('UPDATE', usuario_id, 'Transacciones', transaccion.id);
 
         return res.status(200).json(transaccion);
@@ -201,8 +201,16 @@ exports.deleteTransaccionDetalles = async (req, res) => {
             return res.status(404).json({ message: 'No se encontraron detalles de transacción para eliminar' });
         }
 
-        detalles.forEach(async (detalle) => {
+        // Usar Promise.all en lugar de forEach para manejar correctamente las promesas
+        await Promise.all(detalles.map(async (detalle) => {
             await detalle.destroy();
+        }));
+
+        await auditLogService.createAuditLog('DELETE', usuario_id, 'DetalleTransaccion', id);
+
+        return res.status(200).json({ 
+            message: 'Detalles de transacción eliminados exitosamente',
+            detalles_eliminados: detalles.length
         });
 
     }catch(error){
@@ -613,7 +621,7 @@ const validateTransaccionFields = (req) => {
 
 const validateTransaccionDetalles = (detalles) => {
     if (!detalles || !Array.isArray(detalles) || detalles.length === 0) {
-        return 'Debe proporcionar al menos un detalle de transacción';
+        return 'La transacción debe tener al menos un detalle';
     }
 
     for (const [index, detalle] of detalles.entries()) {

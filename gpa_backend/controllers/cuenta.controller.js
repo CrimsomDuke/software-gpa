@@ -126,3 +126,70 @@ exports.getAllCuentas = async (req, res) => {
       res.status(500).json({ message: 'Error interno al eliminar cuenta' });
     }
   };
+  
+  // Obtener cuentas por tipo
+exports.getCuentasByTipo = async (req, res) => {
+  const { tipoId } = req.params;
+  try {
+    const cuentas = await db.Cuenta.findAll({
+      where: { tipo_cuenta_id: tipoId },
+      include: [
+        { model: db.TipoCuenta, as: 'tipo_cuenta' },
+        { model: db.NivelCuenta, as: 'nivel_cuenta' },
+        { model: db.Cuenta, as: 'padre' }
+      ]
+    });
+    
+    if (!cuentas || cuentas.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron cuentas para este tipo' });
+    }
+    
+    res.status(200).json({ cuentas });
+  } catch (error) {
+    console.error('Error al obtener cuentas por tipo:', error);
+    res.status(500).json({ message: 'Error interno al obtener cuentas por tipo' });
+  }
+};
+
+// Obtener cuentas por nivel
+exports.getCuentasByNivel = async (req, res) => {
+  const { nivelId } = req.params;
+  try {
+    const cuentas = await db.Cuenta.findAll({
+      where: { nivel_cuenta_id: nivelId },
+      include: [
+        { model: db.TipoCuenta, as: 'tipo_cuenta' },
+        { model: db.NivelCuenta, as: 'nivel_cuenta' },
+        { model: db.Cuenta, as: 'padre' }
+      ]
+    });
+    
+    if (!cuentas || cuentas.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron cuentas para este nivel' });
+    }
+    
+    res.status(200).json({ cuentas });
+  } catch (error) {
+    console.error('Error al obtener cuentas por nivel:', error);
+    res.status(500).json({ message: 'Error interno al obtener cuentas por nivel' });
+  }
+};
+
+// Obtener cuentas activas
+exports.getCuentasActivas = async (req, res) => {
+  try {
+    const cuentas = await db.Cuenta.findAll({
+      where: { esta_activa: true },
+      include: [
+        { model: db.TipoCuenta, as: 'tipo_cuenta' },
+        { model: db.NivelCuenta, as: 'nivel_cuenta' },
+        { model: db.Cuenta, as: 'padre' }
+      ]
+    });
+    
+    res.status(200).json({ cuentas });
+  } catch (error) {
+    console.error('Error al obtener cuentas activas:', error);
+    res.status(500).json({ message: 'Error interno al obtener cuentas activas' });
+  }
+};

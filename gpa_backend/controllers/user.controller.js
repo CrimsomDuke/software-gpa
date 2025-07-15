@@ -1,5 +1,3 @@
-
-const global_vars = require('../config/global');
 const db = require('../models/');
 const AuditLogService = require('../services/audit_log.service');
 const sha1 = require('sha1');
@@ -79,6 +77,9 @@ exports.registerUser = async (req, res) => {
         res.status(500).json({ message: `Internal server error: ${error}` });
     }
 }
+
+// Alias para compatibilidad con tests
+exports.createUser = exports.registerUser;
 
 exports.loginUser = async (req, res) => {
     const { username, password } = req.body;
@@ -208,12 +209,43 @@ exports.updateUser = async (req, res) => {
     }
 }
 
+// Función delete user si no existe
+exports.deleteUser = async (req, res) => {
+    const { id } = req.params;
+    const { user_id } = req.body; // Usuario que realiza la eliminación
+
+    try {
+        const user = await db.User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // No permitir auto-eliminación
+        if (parseInt(id) === parseInt(user_id)) {
+            return res.status(400).json({ message: 'No puedes eliminar tu propia cuenta' });
+        }
+
+        await user.destroy();
+
+        // Registrar en audit log si está disponible
+        if (user_id) {
+            AuditLogService.createAuditLog('DELETE', user_id, 'User', id);
+        }
+
+        res.status(200).json({ message: 'Usuario eliminado correctamente' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+
 const verifyPassword = (password, hashedPassword) => {
     return sha1(password) === hashedPassword; // Compare the hashed password with the stored hashed password
 }
 
 const validateUserFields = (req) => {
-    const { username, fullname, email, password, role } = req.body;
+    const { username, fullname, email, password, role_id } = req.body;
+    
     if(!username){
         return 'Username is required';
     }
@@ -226,8 +258,23 @@ const validateUserFields = (req) => {
         return 'Email is required';
     }
 
+    // Validación básica de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)){
+        return 'Invalid email format';
+    }
+
     if(!password){
         return 'Password is required';
+    }
+
+    // Validación de contraseña (mínimo 6 caracteres)
+    if(password.length < 6){
+        return 'Password must be at least 6 characters long';
+    }
+
+    if(!role_id){
+        return 'Role ID is required';
     }
 
     return '';

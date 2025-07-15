@@ -1,4 +1,3 @@
-
 const db = require('../models/');
 const AuditLogService = require('../services/audit_log.service');
 
@@ -25,6 +24,30 @@ exports.getAllCentroCosto = async (req, res) => {
         return res.status(500).json({ message: 'Error obteniendo centros de costo' });
     }
 }
+
+// Obtener todos los centros de costo (nombre consistente con tests)
+exports.getAllCentrosCosto = async (req, res) => {
+    try{
+        const centrosCosto = await db.CentroCosto.findAll();
+        return res.status(200).json({ centrosCosto });
+    }catch(error){
+        console.error('Error fetching CentrosCosto:', error);
+        return res.status(500).json({ message: 'Error obteniendo centros de costo' });
+    }
+};
+
+// Obtener centros de costo activos
+exports.getCentrosCostoActivos = async (req, res) => {
+    try{
+        const centrosCosto = await db.CentroCosto.findAll({
+            where: { esta_activo: true }
+        });
+        return res.status(200).json({ centrosCosto });
+    }catch(error){
+        console.error('Error fetching active CentrosCosto:', error);
+        return res.status(500).json({ message: 'Error obteniendo centros de costo activos' });
+    }
+};
 
 exports.createCentroCosto = async (req, res) => {
     const { nombre, descripcion, codigo, user_id } = req.body;
