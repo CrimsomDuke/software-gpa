@@ -8,6 +8,20 @@ const loading = ref(false);
 const error = ref(null);
 const cuentaSeleccionada = ref(1); // ID de cuenta
 
+const exportarInforme = (formato) => {
+  // Verificamos que haya datos para exportar
+  if (libroMayor.value.length === 0) {
+    alert('No hay datos para exportar.');
+    return;
+  }
+
+  // Construimos la URL de descarga con los filtros actuales y el formato deseado
+  const url = `http://localhost:3000/informe/libro_mayor?cuenta_id=${cuentaSeleccionada.value}&periodo_fiscal_id=1&formato=${formato}`;
+
+  // Abrimos la URL. El backend enviará el archivo y el navegador iniciará la descarga.
+  window.open(url, '_blank');
+};
+
 // Obtener datos del libro mayor desde el backend
 const fetchLibroMayor = async () => {
   loading.value = true;
@@ -52,13 +66,44 @@ watch(cuentaSeleccionada, fetchLibroMayor);
         </div>
 
         <div class="card-body">
-          <div class="mb-3">
-            <label class="form-label">Seleccionar cuenta:</label>
-            <select class="form-select" v-model="cuentaSeleccionada" @change="fetchLibroMayor">
-              <option value="1">1.1.1.1 - Caja General</option>
-              <option value="2">1.1.1.2 - Banco Principal</option>
-            </select>
+          <div class="row mb-3 align-items-end">
+            <!-- Selector de cuenta -->
+            <div class="col-md-6">
+              <label class="form-label">Seleccionar cuenta:</label>
+              <select class="form-select" v-model="cuentaSeleccionada">
+                <option value="1">1.1.1.1 - Caja General</option>
+                <option value="2">1.1.1.2 - Banco Principal</option>
+                <!-- Puedes cargar estas opciones dinámicamente si lo necesitas -->
+              </select>
+            </div>
+            <!-- Botón de exportación -->
+            <div class="col-md-6 text-end">
+              <div class="btn-group">
+                <button
+                  type="button"
+                  class="btn btn-success dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  :disabled="libroMayor.length === 0 || loading"
+                >
+                  <i class="fas fa-download me-2"></i>Exportar
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#" @click.prevent="exportarInforme('xlsx')">
+                    <i class="fas fa-file-excel text-success me-2"></i>Exportar a Excel (.xlsx)
+                  </a></li>
+                  <li><a class="dropdown-item" href="#" @click.prevent="exportarInforme('pdf')">
+                    <i class="fas fa-file-pdf text-danger me-2"></i>Exportar a PDF
+                  </a></li>
+                  <li><a class="dropdown-item" href="#" @click.prevent="exportarInforme('html')">
+                    <i class="fab fa-html5 text-primary me-2"></i>Exportar a HTML
+                  </a></li>
+                </ul>
+              </div>
+            </div>
           </div>
+
+
 
           <div v-if="loading" class="alert alert-info">Cargando datos...</div>
           <div v-if="error" class="alert alert-danger">{{ error }}</div>
